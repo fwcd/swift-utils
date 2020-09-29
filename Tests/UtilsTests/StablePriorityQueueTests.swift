@@ -5,24 +5,24 @@ final class StablePriorityQueueTests: XCTestCase {
     static var allTests = [
         ("testStableBinaryHeap", testStableBinaryHeap)
     ]
-    
+
     private struct Item: Comparable, CustomStringConvertible {
         let label: String
         let id: Int
         var description: String { return label }
-        
+
         static func <(lhs: Item, rhs: Item) -> Bool {
             return lhs.id < rhs.id
         }
-        
+
         static func ==(lhs: Item, rhs: Item) -> Bool {
             return lhs.id == rhs.id
         }
     }
-    
+
     func testStableBinaryHeap() throws {
         var pq = StableBinaryHeap<Item>()
-        
+
         // Insertions
 
         pq.insert(Item(label: "a", id: 10))
@@ -33,7 +33,7 @@ final class StablePriorityQueueTests: XCTestCase {
         assert(heap: pq, containsInOrder: ["e", "a", "b", "d"])
         pq.insert(Item(label: "c", id: 10))
         assert(heap: pq, containsInOrder: ["e", "a", "b", "d", "c"])
-        
+
         // Removals
 
         XCTAssertEqual(pq.popMax()?.label, "e")
@@ -54,7 +54,7 @@ final class StablePriorityQueueTests: XCTestCase {
 
         XCTAssertEqual(pq.popMax()?.label, "d")
     }
-    
+
     private func assert(heap: StableBinaryHeap<Item>, containsInOrder labels: [String]) {
         XCTAssertEqual(heap.inner.elements.map { $0.inner.label }, labels)
     }

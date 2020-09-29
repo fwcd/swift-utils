@@ -5,7 +5,7 @@ final class Mat2Tests: XCTestCase {
     static var allTests = [
         ("testMat2", testMat2)
     ]
-    
+
     func testMat2() throws {
         let a = Mat2(
             ix:  3, jx: 6,
@@ -35,7 +35,7 @@ final class Mat2Tests: XCTestCase {
             iy: 1, jy: -1
         ))
         XCTAssertEqual(a * Vec2(x: 4, y: 2), Vec2(x: 24, y: -6))
-        
+
         XCTAssertEqual(a.asMatrix, Matrix([
             [3, 6],
             [-6, 9]

@@ -37,7 +37,7 @@ final class MatrixTests: XCTestCase {
             [2, 3]
         ]))
     }
-    
+
     func testDeterminant() throws {
         XCTAssertEqual(Matrix<Double>([[-7]]).determinant, -7)
         XCTAssertEqual(Matrix<Rational>([

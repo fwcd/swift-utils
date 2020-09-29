@@ -5,7 +5,7 @@ final class BiDictionaryTests: XCTestCase {
     static var allTests = [
         ("testBiDictionary", testBiDictionary)
     ]
-    
+
     func testBiDictionary() throws {
         var bd = BiDictionary<String, Int>()
         XCTAssert(bd.isEmpty)

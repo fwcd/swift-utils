@@ -6,7 +6,7 @@ final class StringUtilsTests: XCTestCase {
         ("testSplitPreservingQuotes", testSplitPreservingQuotes),
         ("testCamelHumps", testCamelHumps)
     ]
-    
+
     func testSplitPreservingQuotes() {
         XCTAssertEqual("this is | a string | separated by pipes".splitPreservingQuotes(by: "|"), [
             "this is ",

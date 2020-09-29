@@ -5,7 +5,7 @@ final class BinaryHeapTests: XCTestCase {
     static var allTests = [
         ("testBinaryHeap", testBinaryHeap)
     ]
-    
+
     func testBinaryHeap() throws {
         var heap = BinaryHeap<Int>()
         heap.insert(7)
@@ -22,7 +22,7 @@ final class BinaryHeapTests: XCTestCase {
         XCTAssert(heap.isValidHeap())
         heap.insert(1)
         XCTAssert(heap.isValidHeap())
-        
+
         XCTAssertEqual(heap.popMax(), 98)
         XCTAssert(heap.isValidHeap())
         XCTAssertEqual(heap.popMax(), 7)
