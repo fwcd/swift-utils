@@ -6,8 +6,8 @@ import Logging
  * A handler that logs to the console and stores
  * the last n lines in a global cyclic queue.
  */
-public struct D2LogHandler: LogHandler {
-    private static let lastOutputsQueue = DispatchQueue(label: "D2LogHandler.lastOutputs")
+public struct StoringLogHandler: LogHandler {
+    private static let lastOutputsQueue = DispatchQueue(label: "StoringLogHandler.lastOutputs")
     public private(set) static var lastOutputs = CircularArray<String>(capacity: 100)
     public static let timestampFormatKey = "timestamp"
 
@@ -28,13 +28,13 @@ public struct D2LogHandler: LogHandler {
         let output = "\(timestamp(using: mergedMetadata)) [\(level)] \(label): \(message)"
 
         print(output)
-        D2LogHandler.lastOutputsQueue.async {
-            D2LogHandler.lastOutputs.push(output)
+        Self.lastOutputsQueue.async {
+            Self.lastOutputs.push(output)
         }
     }
 
     private func timestamp(using metadata: Logger.Metadata?) -> String {
-        guard case let .string(timestampFormat)? = metadata?[D2LogHandler.timestampFormatKey] else { return "<invalid timestamp format>" }
+        guard case let .string(timestampFormat)? = metadata?[Self.timestampFormatKey] else { return "<invalid timestamp format>" }
         let formatter = DateFormatter()
         formatter.dateFormat = timestampFormat
         return formatter.string(from: Date())
