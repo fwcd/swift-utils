@@ -1,5 +1,7 @@
 # Swift Utils
 
+[![Linux](https://github.com/fwcd/swift-utils/workflows/Linux/badge.svg)](https://github.com/fwcd/swift-utils/actions)
+
 A large collection of general-purpose utilities for Swift, including:
 
 * Data structures
