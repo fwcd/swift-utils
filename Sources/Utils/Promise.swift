@@ -1,3 +1,4 @@
+import Dispatch
 import Logging
 
 fileprivate let log = Logger(label: "Utils.Promise")
@@ -125,6 +126,23 @@ public class Promise<T, E> where E: Error {
     /// Convenience method for discarding the promise in a method chain.
     /// Making this explicit helps preventing accidental race conditions.
     public func forget() {}
+
+    /// Awaits the promise result synchronously by blocking the
+    /// current thread. You should make sure to not run this method
+    /// from the same thread that also fulfills your promise since that
+    /// might result in a deadlock.
+    public func wait() throws -> T {
+        let semaphore = DispatchSemaphore(value: 0)
+        var result: Result<T, E>!
+
+        listen {
+            result = $0
+            semaphore.signal()
+        }
+
+        semaphore.wait()
+        return try result.get()
+    }
 }
 
 extension Promise where E == Error {
