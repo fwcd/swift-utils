@@ -109,7 +109,7 @@ public extension RandomAccessCollection where Index == Int {
     }
 }
 
-public extension RandomAccessCollection where Self: MutableCollection & BidirectionalCollection, Self == SubSequence, Index == Int {
+public extension Array {
     /// Picks a random index, then swaps the element to the end
     /// and pops it from the array. This should only be used
     /// if the order of the list does not matter.
