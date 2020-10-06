@@ -69,12 +69,12 @@ public func allNonNil<T>(_ array: [T?]) -> [T]? where T: Equatable {
     array.contains(nil) ? nil : array.map { $0! }
 }
 
-public extension Array {
+public extension RandomAccessCollection {
     func truncate(_ length: Int, appending appended: Element? = nil) -> [Element] {
         if count > length {
             return appended.map { prefix(length - 1) + [$0] } ?? Array(prefix(length))
         } else {
-            return self
+            return Array(self)
         }
     }
 
@@ -82,12 +82,8 @@ public extension Array {
         if count > length {
             return prefix(length - 1) + [appender(Array(dropFirst(length - 1)))]
         } else {
-            return self
+            return Array(self)
         }
-    }
-
-    func chunks(ofLength chunkLength: Int) -> [[Element]] {
-        return stride(from: 0, to: count, by: chunkLength).map { Array(self[$0..<Swift.min($0 + chunkLength, count)]) }
     }
 
     func repeated(count: Int) -> [Element] {
@@ -99,6 +95,21 @@ public extension Array {
         return result
     }
 
+    /// The longest prefix satisfying the predicate and the rest of the list
+    func span(_ inPrefix: (Element) throws -> Bool) rethrows -> (SubSequence, SubSequence) {
+        let pre = try prefix(while: inPrefix)
+        let rest = self[pre.endIndex...]
+        return (pre, rest)
+    }
+}
+
+public extension RandomAccessCollection where Index == Int {
+    func chunks(ofLength chunkLength: Int) -> [[Element]] {
+        return stride(from: 0, to: count, by: chunkLength).map { Array(self[$0..<Swift.min($0 + chunkLength, count)]) }
+    }
+}
+
+public extension RandomAccessCollection where Self: MutableCollection & BidirectionalCollection, Self == SubSequence, Index == Int {
     /// Picks a random index, then swaps the element to the end
     /// and pops it from the array. This should only be used
     /// if the order of the list does not matter.
@@ -128,16 +139,9 @@ public extension Array {
         var copy = self
         return copy.removeRandomlyChosenBySwap(count: chosenCount)
     }
-
-    /// The longest prefix satisfying the predicate and the rest of the list
-    func span(_ inPrefix: (Element) throws -> Bool) rethrows -> (ArraySlice<Element>, ArraySlice<Element>) {
-        let pre = try prefix(while: inPrefix)
-        let rest = self[pre.endIndex...]
-        return (pre, rest)
-    }
 }
 
-public extension Array where Element: StringProtocol {
+public extension RandomAccessCollection where Element: StringProtocol {
     /// Creates a natural language 'enumeration' of the items, e.g.
     ///
     /// ["apples", "bananas", "pears"] -> "apples, bananas and pears"
@@ -150,11 +154,13 @@ public extension Array where Element: StringProtocol {
     }
 }
 
-public extension Array where Element: Equatable {
+public extension RandomAccessCollection where Element: Equatable {
     func allIndices(of element: Element) -> [Index] {
-        return enumerated().filter { $0.1 == element }.map { $0.0 }
+        return zip(indices, self).filter { $0.1 == element }.map { $0.0 }
     }
+}
 
+public extension Array where Element: Equatable {
     @discardableResult
     mutating func removeFirst(value: Element) -> Element? {
         guard let index = firstIndex(of: value) else { return nil }
