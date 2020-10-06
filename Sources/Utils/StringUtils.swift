@@ -102,7 +102,7 @@ extension StringProtocol {
         return true
     }
 
-    public func truncate(_ length: Int, appending trailing: String = "") -> String {
+    public func truncated(to length: Int, appending trailing: String = "") -> String {
         if count > length {
             return prefix(length) + trailing
         } else {
@@ -110,7 +110,7 @@ extension StringProtocol {
         }
     }
 
-    public func pluralize(with value: Int) -> String {
+    public func pluralized(with value: Int) -> String {
         value == 1 ? String(self) : "\(self)s"
     }
 

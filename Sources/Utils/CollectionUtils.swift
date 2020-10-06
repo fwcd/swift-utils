@@ -70,7 +70,7 @@ public func allNonNil<T>(_ array: [T?]) -> [T]? where T: Equatable {
 }
 
 public extension RandomAccessCollection {
-    func truncate(_ length: Int, appending appended: Element? = nil) -> [Element] {
+    func truncated(to length: Int, appending appended: Element? = nil) -> [Element] {
         if count > length {
             return appended.map { prefix(length - 1) + [$0] } ?? Array(prefix(length))
         } else {
@@ -78,7 +78,7 @@ public extension RandomAccessCollection {
         }
     }
 
-    func truncate(_ length: Int, _ appender: ([Element]) -> Element) -> [Element] {
+    func truncated(to length: Int, _ appender: ([Element]) -> Element) -> [Element] {
         if count > length {
             return prefix(length - 1) + [appender(Array(dropFirst(length - 1)))]
         } else {
