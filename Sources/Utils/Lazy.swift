@@ -1,5 +1,5 @@
 @propertyWrapper
-public class Lazy<K, V> {
+public class Lazy<V> {
     private var state: State
     public var wrappedValue: V {
         switch state {
