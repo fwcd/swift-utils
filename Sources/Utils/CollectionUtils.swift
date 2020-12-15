@@ -4,6 +4,15 @@ public extension Sequence {
         try reduce(0) { try predicate($1) ? $0 + 1 : $0 }
     }
 
+    /// Similar to reduce, but returns a list of successive reduced values from the left
+    func scan<T>(_ initial: T, _ accumulator: (T, Element) throws -> T) rethrows -> [T] {
+        var scanned = [initial]
+        for value in self {
+            scanned.append(try accumulator(scanned.last!, value))
+        }
+        return scanned
+    }
+
     /// Turns a list of optionals into an optional list, like Haskell's 'sequence'.
     func sequenceMap<T>(_ transform: (Element) throws -> T? ) rethrows -> [T]? {
         var result = [T]()
