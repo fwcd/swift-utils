@@ -13,6 +13,15 @@ public extension Sequence {
         return scanned
     }
 
+    /// Similar to scan, but without an initial element
+    func scan1(_ accumulator: (Element, Element) throws -> Element) rethrows -> [Element] {
+        var scanned = [Element]()
+        for value in self {
+            scanned.append(try scanned.last.map { try accumulator($0, value) } ?? value)
+        }
+        return scanned
+    }
+
     /// Turns a list of optionals into an optional list, like Haskell's 'sequence'.
     func sequenceMap<T>(_ transform: (Element) throws -> T? ) rethrows -> [T]? {
         var result = [T]()
