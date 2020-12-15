@@ -22,6 +22,15 @@ public extension Sequence {
         return scanned
     }
 
+    /// Reduce, but without an initial element
+    func reduce1(_ accumulator: (Element, Element) throws -> Element) rethrows -> Element? {
+        var result: Element? = nil
+        for value in self {
+            result = try result.map { try accumulator($0, value) } ?? value
+        }
+        return result
+    }
+
     /// Turns a list of optionals into an optional list, like Haskell's 'sequence'.
     func sequenceMap<T>(_ transform: (Element) throws -> T? ) rethrows -> [T]? {
         var result = [T]()
