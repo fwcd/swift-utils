@@ -82,21 +82,21 @@ public struct HTTPRequest {
     }
 
     public func fetchUTF8Async() -> Promise<String, Error> {
-        runAsync().then {
+        runAsync().mapCatching {
             if let utf8 = String(data: $0, encoding: .utf8) {
-                return Promise(.success(utf8))
+                return utf8
             } else {
-                return Promise(.failure(NetworkError.notUTF8($0)))
+                throw NetworkError.notUTF8($0)
             }
         }
     }
 
     public func fetchJSONAsync<T>(as type: T.Type) -> Promise<T, Error> where T: Decodable {
-        runAsync().then {
-            if let deserialized = try? JSONDecoder().decode(type, from: $0) {
-                return Promise(.success(deserialized))
-            } else {
-                return Promise(.failure(NetworkError.jsonDecodingError(String(data: $0, encoding: .utf8) ?? "<non-UTF-8-encoded data: \($0)>")))
+        runAsync().mapCatching {
+            do {
+                return try JSONDecoder().decode(type, from: $0)
+            } catch {
+                throw NetworkError.jsonDecodingError("\(error): \(String(data: $0, encoding: .utf8) ?? "<non-UTF-8-encoded data: \($0)>")")
             }
         }
     }
