@@ -6,6 +6,7 @@ import FoundationNetworking
 import FoundationXML
 #endif
 import SwiftSoup
+import XMLCoder
 
 public struct HTTPRequest {
     private var request: URLRequest
@@ -98,6 +99,10 @@ public struct HTTPRequest {
                 return Promise(.failure(NetworkError.jsonDecodingError(String(data: $0, encoding: .utf8) ?? "<non-UTF-8-encoded data: \($0)>")))
             }
         }
+    }
+
+    public func fetchXMLAsync<T>(as type: T.Type) -> Promise<T, Error> where T: Decodable {
+        runAsync().mapCatching { try XMLDecoder().decode(type, from: $0) }
     }
 
     public func fetchXMLAsync(using delegate: XMLParserDelegate) {
