@@ -10,7 +10,7 @@ let package = Package(
         .library(
             name: "Utils",
             targets: ["Utils"]
-        )
+        ),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -27,12 +27,15 @@ let package = Package(
             dependencies: [
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "SwiftSoup", package: "SwiftSoup"),
-                .product(name: "Socket", package: "Socket")
+                .product(name: "Socket", package: "Socket"),
+                .product(name: "XMLCoder", package: "XMLCoder"),
             ]
         ),
         .testTarget(
             name: "UtilsTests",
-            dependencies: ["Utils"]
+            dependencies: [
+                .target(name: "Utils"),
+            ]
         )
     ]
 )
