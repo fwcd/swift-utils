@@ -65,6 +65,19 @@ public extension Sequence {
             .sorted(by: ascendingComparator { ($0.1)[0].0 })
             .map { ($0.0, $0.1.map(\.1)) }
     }
+
+    /// Chunks a sequence
+    func chunks(ofLength chunkLength: Int) -> [[Element]] {
+        var chunks = [[Element]]()
+        for element in self {
+            if chunks.isEmpty || (chunks.last?.count ?? 0) >= chunkLength {
+                chunks.append([element])
+            } else {
+                chunks[chunks.count - 1].append(element)
+            }
+        }
+        return chunks
+    }
 }
 
 public extension Dictionary where Key: StringProtocol, Value: StringProtocol {
@@ -127,12 +140,6 @@ public extension RandomAccessCollection {
         let pre = try prefix(while: inPrefix)
         let rest = self[pre.endIndex...]
         return (pre, rest)
-    }
-}
-
-public extension RandomAccessCollection where Index == Int {
-    func chunks(ofLength chunkLength: Int) -> [[Element]] {
-        return stride(from: 0, to: count, by: chunkLength).map { Array(self[$0..<Swift.min($0 + chunkLength, count)]) }
     }
 }
 
