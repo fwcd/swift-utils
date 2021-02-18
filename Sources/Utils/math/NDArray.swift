@@ -100,7 +100,7 @@ public struct NDArray<T: IntExpressibleAlgebraicField>: Addable, Subtractable, N
             throw NDArrayError.shapeMismatch("Cannot split scalar")
         }
         let innerShape = Array(shape.dropFirst())
-        return values.chunks(ofLength: shape[0]).map { try! NDArray($0, shape: innerShape) }
+        return values.chunks(ofLength: shape[0]).map { try! NDArray(Array($0), shape: innerShape) }
     }
 
     public func map<U>(_ f: (T) throws -> U) rethrows -> NDArray<U> where U: IntExpressibleAlgebraicField {

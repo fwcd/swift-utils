@@ -65,19 +65,6 @@ public extension Sequence {
             .sorted(by: ascendingComparator { ($0.1)[0].0 })
             .map { ($0.0, $0.1.map(\.1)) }
     }
-
-    /// Chunks a sequence
-    func chunks(ofLength chunkLength: Int) -> [[Element]] {
-        var chunks = [[Element]]()
-        for element in self {
-            if chunks.isEmpty || (chunks.last?.count ?? 0) >= chunkLength {
-                chunks.append([element])
-            } else {
-                chunks[chunks.count - 1].append(element)
-            }
-        }
-        return chunks
-    }
 }
 
 public extension Dictionary where Key: StringProtocol, Value: StringProtocol {
@@ -94,6 +81,22 @@ public extension Collection {
 
     subscript(safely index: Index) -> Element? {
         indices.contains(index) ? self[index] : nil
+    }
+
+    /// Splits the collection into chunks
+    func chunks(ofLength chunkLength: Int) -> [SubSequence] {
+        guard chunkLength > 0 else { return [] }
+        var chunks = [SubSequence]()
+        var remaining = self[...]
+        var index = startIndex
+        while formIndex(&index, offsetBy: chunkLength, limitedBy: endIndex) {
+            chunks.append(remaining.prefix(upTo: index))
+            remaining = remaining.suffix(from: index)
+        }
+        if !remaining.isEmpty {
+            chunks.append(remaining)
+        }
+        return chunks
     }
 }
 
