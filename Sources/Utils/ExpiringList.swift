@@ -13,6 +13,9 @@ public class ExpiringList<T>: Sequence {
     private var head: Node? = nil
     private var tail: Node? = nil
     private var currentCount: Int = 0
+
+    private var dateProvider: () -> Date
+
     public var count: Int {
         removeExpired()
         return currentCount
@@ -44,7 +47,9 @@ public class ExpiringList<T>: Sequence {
         }
     }
 
-    public init() {}
+    public init(dateProvider: @escaping () -> Date = Date.init) {
+        self.dateProvider = dateProvider
+    }
 
     public func append(_ element: T, expiry: Date) {
         removeExpired()
@@ -60,7 +65,7 @@ public class ExpiringList<T>: Sequence {
     }
 
     private func removeExpired() {
-        while (head?.expiry.timeIntervalSinceNow ?? 1) < 0 {
+        while (head?.expiry.timeIntervalSince(dateProvider()) ?? 1) < 0 {
             head = head?.next
             currentCount -= 1
         }
