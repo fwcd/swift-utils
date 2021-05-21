@@ -7,7 +7,15 @@ fileprivate let log = Logger(label: "Utils.Shell")
 public struct Shell {
     public init() {}
 
-    public func newProcess(_ executable: String, in directory: URL? = nil, args: [String]? = nil, useBash: Bool = false, withPipedOutput: Bool = false, then: ((Process) -> Void)? = nil) -> (Pipe?, Process) {
+    /** Creates a new subprocess without launching it. */
+    public func newProcess(
+        _ executable: String,
+        in directory: URL? = nil,
+        args: [String]? = nil,
+        useBash: Bool = false,
+        withPipedOutput: Bool = false,
+        then terminationHandler: ((Process, Pipe?) -> Void)? = nil
+    ) -> (Pipe?, Process) {
         var pipe: Pipe? = nil
         let process = Process()
         let path = useBash ? "/bin/bash" : findPath(of: executable)
@@ -19,7 +27,10 @@ public struct Shell {
         }
 
         process.arguments = (useBash ? ["-c", executable] : []) + (args ?? [])
-        process.terminationHandler = then
+
+        if let handler = terminationHandler {
+            process.terminationHandler = { handler($0, pipe) }
+        }
 
         if withPipedOutput {
             pipe = Pipe()
@@ -29,10 +40,10 @@ public struct Shell {
         return (pipe, process)
     }
 
-    /** Synchronously runs the executable and returns the standard output. */
+    /** Runs the executable and returns the standard output synchronously after the process exits. */
     @discardableResult
-    public func outputSync(for executable: String, in directory: URL? = nil, args: [String]? = nil, useBash: Bool = false, then: ((Process) -> Void)? = nil) throws -> String? {
-        let (pipe, process) = newProcess(executable, in: directory, args: args, useBash: useBash, withPipedOutput: true, then: then)
+    public func outputSync(for executable: String, in directory: URL? = nil, args: [String]? = nil, useBash: Bool = false) throws -> String? {
+        let (pipe, process) = newProcess(executable, in: directory, args: args, useBash: useBash, withPipedOutput: true)
 
         try execute(process: process)
         process.waitUntilExit()
@@ -40,8 +51,35 @@ public struct Shell {
         return String(data: pipe!.fileHandleForReading.availableData, encoding: .utf8)
     }
 
-    public func run(_ executable: String, in directory: URL? = nil, args: [String]? = nil, useBash: Bool = false, then: ((Process) -> Void)? = nil) throws {
-        try execute(process: newProcess(executable, in: directory, args: args, useBash: useBash, then: then).1)
+    /** Runs the executable and asynchronously returns the standard output. */
+    @discardableResult
+    public func output(for executable: String, in directory: URL? = nil, args: [String]? = nil, useBash: Bool = false) -> Promise<String?, Error> {
+        Promise { then in
+            let (_, process) = newProcess(executable, in: directory, args: args, useBash: useBash, withPipedOutput: true) {
+                then(.success(($0, $1)))
+            }
+
+            do {
+                try execute(process: process)
+            } catch {
+                then(.failure(error))
+            }
+        }
+        .map { (_: Process, pipe: Pipe?) in
+            return String(data: pipe!.fileHandleForReading.availableData, encoding: .utf8)
+        }
+    }
+
+    /** Creates a new subprocess and launches it. */
+    public func run(
+        _ executable: String,
+        in directory: URL? = nil,
+        args: [String]? = nil,
+        useBash: Bool = false,
+        withPipedOutput: Bool = false,
+        then terminationHandler: ((Process, Pipe?) -> Void)? = nil
+    ) throws {
+        try execute(process: newProcess(executable, in: directory, args: args, useBash: useBash, withPipedOutput: withPipedOutput, then: terminationHandler).1)
     }
 
     public func findPath(of executable: String) -> String {
