@@ -42,18 +42,24 @@ public struct Shell {
 
     /** Runs the executable and returns the standard output synchronously after the process exits. */
     @discardableResult
-    public func outputSync(for executable: String, in directory: URL? = nil, args: [String]? = nil, useBash: Bool = false) throws -> String? {
+    public func outputSync(for executable: String, in directory: URL? = nil, args: [String]? = nil, useBash: Bool = false) throws -> Data {
         let (pipe, process) = newProcess(executable, in: directory, args: args, useBash: useBash, withPipedOutput: true)
 
         try execute(process: process)
         process.waitUntilExit()
 
-        return String(data: pipe!.fileHandleForReading.availableData, encoding: .utf8)
+        return pipe!.fileHandleForReading.availableData
+    }
+
+    /** Runs the executable and returns the standard output synchronously after the process exits. */
+    @discardableResult
+    public func utf8Sync(for executable: String, in directory: URL? = nil, args: [String]? = nil, useBash: Bool = false) throws -> String? {
+        return String(data: try outputSync(for: executable, in: directory, args: args, useBash: useBash), encoding: .utf8)
     }
 
     /** Runs the executable and asynchronously returns the standard output. */
     @discardableResult
-    public func output(for executable: String, in directory: URL? = nil, args: [String]? = nil, useBash: Bool = false) -> Promise<String?, Error> {
+    public func output(for executable: String, in directory: URL? = nil, args: [String]? = nil, useBash: Bool = false) -> Promise<Data, Error> {
         Promise { then in
             let (_, process) = newProcess(executable, in: directory, args: args, useBash: useBash, withPipedOutput: true) {
                 then(.success(($0, $1)))
@@ -66,8 +72,15 @@ public struct Shell {
             }
         }
         .map { (_: Process, pipe: Pipe?) in
-            return String(data: pipe!.fileHandleForReading.availableData, encoding: .utf8)
+            pipe!.fileHandleForReading.availableData
         }
+    }
+
+    /** Runs the executable and asynchronously returns the standard output. */
+    @discardableResult
+    public func utf8(for executable: String, in directory: URL? = nil, args: [String]? = nil, useBash: Bool = false) -> Promise<String?, Error> {
+        output(for: executable, in: directory, args: args, useBash: useBash)
+            .map { String(data: $0, encoding: .utf8) }
     }
 
     /** Creates a new subprocess and launches it. */
