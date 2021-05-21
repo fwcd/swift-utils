@@ -18,6 +18,6 @@ public struct NodePackage {
 
     /** Invokes `npm start` with the given arguments. */
     public func start(withArgs args: [String]) -> Promise<Data, Error> {
-        Shell().output(for: "npm", in: directoryURL, args: ["start"] + args)
+        Shell().output(for: "npm", in: directoryURL, args: ["run", "--silent", "start", "--"] + args)
     }
 }
