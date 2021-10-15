@@ -5,7 +5,8 @@ fileprivate let log = Logger(label: "Utils.TemporaryFile")
 
 /**
  * A custom temporary file. The file is deleted
- * when this instance is deinitialized.
+ * when this instance is deinitialized if `deleteAutomatically`
+ * is set.
  */
 public class TemporaryFile {
     public let url: URL
