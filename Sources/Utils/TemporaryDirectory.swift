@@ -12,7 +12,7 @@ public class TemporaryDirectory {
     public var deleteAutomatically: Bool = true
     public var exists: Bool { return FileManager.default.fileExists(atPath: url.path) }
 
-    public init() {
+    public init(prefix: String? = nil) {
         let fileManager = FileManager.default
         let temporaryDirectory: URL
 
@@ -22,7 +22,8 @@ public class TemporaryDirectory {
             temporaryDirectory = URL(fileURLWithPath: NSTemporaryDirectory())
         }
 
-        url = temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let dirName = (`prefix`.map { "\($0)-" } ?? "") + UUID().uuidString
+        url = temporaryDirectory.appendingPathComponent(dirName)
     }
 
     public func create(withIntermediateDirectories: Bool = true) throws {
