@@ -1,7 +1,13 @@
+import Foundation
+
 /// A discrete probability distribution created from
 /// custom values.
 public struct CustomDiscreteDistribution<T>: Distribution {
-    private let distribution: [(T, Double)]
+    public let distribution: [(T, Double)]
+
+    public var entropy: Double {
+        -distribution.map { (_, p) in p * log2(p) }.reduce(0, +)
+    }
 
     /// Creates a probability distribution that normalizes the given
     /// probabilities to the unit interval.
