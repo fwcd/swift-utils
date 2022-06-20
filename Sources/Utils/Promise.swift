@@ -13,6 +13,7 @@ public class Promise<T, E> where E: Error {
     private let mutex = MutexLock()
     private var state: State
     private var listeners: [(Result<T, E>) -> Void] = []
+    private var wasListenedTo: Bool = false
 
     /// Creates a finished, succeeded promise.
     public convenience init(_ value: T) {
@@ -31,15 +32,24 @@ public class Promise<T, E> where E: Error {
         thenable { result in
             self.mutex.lock {
                 self.state = .finished(result)
-                if self.listeners.isEmpty, case let .failure(error) = result {
-                    log.error("Unhandled Promise error: \(error)")
-                } else {
-                    for listener in self.listeners {
-                        listener(result)
-                    }
-                    self.listeners = []
+                for listener in self.listeners {
+                    listener(result)
                 }
+                self.listeners = []
             }
+        }
+    }
+
+    deinit {
+        switch state {
+        case .pending:
+            log.warning("Deinitializing a pending promise, this is probably an error.")
+        case .finished(.failure(let error)):
+            if !wasListenedTo {
+                log.error("Unhandled promise error: \(error)")
+            }
+        default:
+            break
         }
     }
 
@@ -50,7 +60,8 @@ public class Promise<T, E> where E: Error {
 
     /// Listens for the result. Only fires once.
     public func listen(_ listener: @escaping (Result<T, E>) -> Void) {
-        self.mutex.lock {
+        mutex.lock {
+            wasListenedTo = true
             if case let .finished(result) = state {
                 listener(result)
             } else {
@@ -80,7 +91,7 @@ public class Promise<T, E> where E: Error {
     /// Chains another asynchronous computation after this one.
     public func then<U>(_ next: @escaping (T) -> Promise<U, E>) -> Promise<U, E> {
         Promise<U, E> { then in
-            self.listen {
+            listen {
                 switch $0 {
                     case .success(let value):
                         next(value).listen(then)
@@ -94,7 +105,7 @@ public class Promise<T, E> where E: Error {
     /// Chains another synchronous computation after this one.
     public func map<U>(_ transform: @escaping (T) -> U) -> Promise<U, E> {
         Promise<U, E> { then in
-            self.listen {
+            listen {
                 then($0.map(transform))
             }
         }
@@ -103,7 +114,7 @@ public class Promise<T, E> where E: Error {
     /// Chains another synchronous computation after this one.
     public func mapResult<U>(_ transform: @escaping (Result<T, E>) -> Result<U, E>) -> Promise<U, E> {
         Promise<U, E> { then in
-            self.listen {
+            listen {
                 then(transform($0))
             }
         }
