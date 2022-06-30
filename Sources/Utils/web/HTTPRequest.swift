@@ -10,9 +10,15 @@ import XMLCoder
 
 public struct HTTPRequest {
     private var request: URLRequest
+    private let session: URLSession?
 
-    public init(url: URL) {
-        request = URLRequest(url: url)
+    public init(request: URLRequest, session: URLSession? = nil) {
+        self.request = request
+        self.session = session
+    }
+
+    public init(url: URL, session: URLSession? = nil) {
+        self.init(request: URLRequest(url: url), session: session)
     }
 
     public init(
@@ -23,7 +29,8 @@ public struct HTTPRequest {
         method: String = "GET",
         query: [String: String] = [:],
         headers: [String: String] = [:],
-        body customBody: String? = nil
+        body customBody: String? = nil,
+        session: URLSession = URLSession.shared
     ) throws {
         let isPost = method == "POST"
 
@@ -48,7 +55,7 @@ public struct HTTPRequest {
 
         guard let url = components.url else { throw NetworkError.couldNotCreateURL(components) }
 
-        request = URLRequest(url: url)
+        var request = URLRequest(url: url)
         request.httpMethod = method
 
         if isPost {
@@ -62,11 +69,14 @@ public struct HTTPRequest {
         for (key, value) in headers {
             request.setValue(value, forHTTPHeaderField: key)
         }
+
+        self.init(request: request, session: session)
     }
 
     public func runAsync() -> Promise<Data, Error> {
         Promise { then in
-            URLSession.shared.dataTask(with: request) { data, response, error in
+            let session = session ?? URLSession.shared
+            session.dataTask(with: request) { data, response, error in
                 guard error == nil else {
                     then(.failure(NetworkError.ioError(error!)))
                     return
