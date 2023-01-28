@@ -2,6 +2,12 @@ import Dispatch
 import Foundation
 import Logging
 
+#if os(Linux)
+import Glibc
+#else
+import Darwin.C
+#endif
+
 /**
  * A handler that logs to the console and stores
  * the last n lines in a global cyclic queue.
@@ -17,9 +23,18 @@ public struct StoringLogHandler: LogHandler {
     ]
 
     private let label: String
+    private let printToStdout: Bool
+    private let autoFlushStdout: Bool
 
-    public init(label: String, logLevel: Logger.Level = .info) {
+    public init(
+        label: String,
+        printToStdout: Bool = true,
+        autoFlushStdout: Bool = false,
+        logLevel: Logger.Level = .info
+    ) {
         self.label = label
+        self.printToStdout = printToStdout
+        self.autoFlushStdout = autoFlushStdout
         self.logLevel = logLevel
     }
 
@@ -27,7 +42,13 @@ public struct StoringLogHandler: LogHandler {
         let mergedMetadata = self.metadata.merging(metadata ?? [:], uniquingKeysWith: { _, newKey in newKey })
         let output = "\(timestamp(using: mergedMetadata)) [\(level)] \(label): \(message)"
 
-        print(output)
+        if printToStdout {
+            print(output)
+            if autoFlushStdout {
+                fflush(stdout)
+            }
+        }
+
         Self.lastOutputsQueue.async {
             Self.lastOutputs.push(output)
         }
