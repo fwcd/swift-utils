@@ -15,7 +15,6 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.0.0"),
-        .package(name: "Socket", url: "https://github.com/Kitura/BlueSocket.git", .upToNextMinor(from: "1.0.0")),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.4.0"),
         .package(url: "https://github.com/MaxDesiatov/XMLCoder.git", from: "0.12.0"),
     ],
@@ -27,7 +26,6 @@ let package = Package(
             dependencies: [
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "SwiftSoup", package: "SwiftSoup"),
-                .product(name: "Socket", package: "Socket"),
                 .product(name: "XMLCoder", package: "XMLCoder"),
             ]
         ),
