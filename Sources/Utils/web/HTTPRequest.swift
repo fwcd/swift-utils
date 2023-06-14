@@ -38,7 +38,7 @@ public struct HTTPRequest {
         components.scheme = scheme
         components.host = host
         components.path = path
-        components.queryItems = query.map { URLQueryItem(name: $0.key, value: $0.value) }
+        components.queryItems = query.isEmpty ? nil : query.map { URLQueryItem(name: $0.key, value: $0.value) }
 
         if let p = port {
             components.port = p
