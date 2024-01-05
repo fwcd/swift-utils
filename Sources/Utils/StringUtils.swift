@@ -163,6 +163,8 @@ extension StringProtocol {
         return matrix.last!
     }
 
+    /// The Levenshtein string distance, i.e. the minimal number of insertions,
+    /// deletions and substitutions to transform this string to the given string.
     public func levenshteinDistance<S>(to rhs: S, caseSensitive: Bool = true) -> Int where S: StringProtocol {
         editDistance(
             to: rhs,
@@ -170,6 +172,12 @@ extension StringProtocol {
         )
     }
 
+    /// The Longest Common Subsequence (LCS) string distance, i.e. the minimal
+    /// number of insertions and deletions to transform this string to the given
+    /// string.
+    ///
+    /// This distance is equivalent to `self.count + rhs.count` minus the length
+    /// of the LCS between `self` and `rhs`.
     public func lcsDistance<S>(to rhs: S, caseSensitive: Bool = true) -> Int where S: StringProtocol {
         editDistance(
             to: rhs,
