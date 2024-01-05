@@ -18,9 +18,6 @@ final class StringUtilsTests: XCTestCase {
             " that ' should | ` | not ` | be ' ",
             " split"
         ])
-        XCTAssertEqual("".levenshteinDistance(to: "ab"), 2)
-        XCTAssertEqual("abc".levenshteinDistance(to: ""), 3)
-        XCTAssertEqual("kitten".levenshteinDistance(to: "sitting"), 3)
     }
 
     func testCamelHumps() {
@@ -29,5 +26,14 @@ final class StringUtilsTests: XCTestCase {
         XCTAssertEqual("Upper".camelHumps, ["Upper"])
         XCTAssertEqual("camelCase".camelHumps, ["camel", "Case"])
         XCTAssertEqual("UpperCamelCase".camelHumps, ["Upper", "Camel", "Case"])
+    }
+
+    func testLevenshteinDistance() {
+        XCTAssertEqual("".levenshteinDistance(to: ""), 0)
+        XCTAssertEqual("".levenshteinDistance(to: "abc"), 3)
+        XCTAssertEqual("abc".levenshteinDistance(to: "abc"), 0)
+        XCTAssertEqual("cba".levenshteinDistance(to: "abc"), 2)
+        XCTAssertEqual("bc".levenshteinDistance(to: "abc"), 1)
+        XCTAssertEqual("kitten".levenshteinDistance(to: "sitting"), 3)
     }
 }
