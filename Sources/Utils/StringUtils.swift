@@ -142,11 +142,11 @@ extension StringProtocol {
         for y in 1..<height {
             for x in 1..<width {
                 let equal = lhsChars[x - 1] == rhsChars[y - 1]
-                var value = Int.max
+                var value = equal ? matrix[y - 1, x - 1] : Int.max
                 if allowSubstitution {
                     value = Swift.min(
                         value,
-                        matrix[y - 1, x - 1] + (equal ? 0 : 1)
+                        matrix[y - 1, x - 1] + 1
                     )
                 }
                 if allowInsertionAndDeletion {

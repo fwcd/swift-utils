@@ -36,4 +36,13 @@ final class StringUtilsTests: XCTestCase {
         XCTAssertEqual("bc".levenshteinDistance(to: "abc"), 1)
         XCTAssertEqual("kitten".levenshteinDistance(to: "sitting"), 3)
     }
+
+    func testLcsDistance() {
+        XCTAssertEqual("".lcsDistance(to: ""), 0)
+        XCTAssertEqual("".lcsDistance(to: "abc"), 3)
+        XCTAssertEqual("abc".lcsDistance(to: "abc"), 0)
+        XCTAssertEqual("cba".lcsDistance(to: "abc"), 4)
+        XCTAssertEqual("bc".lcsDistance(to: "abc"), 1)
+        XCTAssertEqual("kitten".lcsDistance(to: "sitting"), 5)
+    }
 }
