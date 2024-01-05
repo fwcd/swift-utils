@@ -133,8 +133,11 @@ extension StringProtocol {
             for x in 1..<width {
                 let equal = lhsChars[x - 1] == rhsChars[y - 1]
                 matrix[y, x] = [
+                    // Substitution
                     matrix[y - 1, x - 1] + (equal ? 0 : 1),
+                    // Deletion
                     matrix[y - 1, x] + 1,
+                    // Insertion
                     matrix[y, x - 1] + 1
                 ].min()!
             }
