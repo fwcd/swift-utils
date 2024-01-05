@@ -114,7 +114,17 @@ extension StringProtocol {
         value == 1 ? String(self) : "\(self)s"
     }
 
-    public func levenshteinDistance<S>(to rhs: S, caseSensitive: Bool = true) -> Int where S: StringProtocol {
+    public func editDistance<S>(
+        to rhs: S,
+        caseSensitive: Bool = true,
+        allowInsertionAndDeletion: Bool = true,
+        allowSubstitution: Bool = true
+    ) -> Int where S: StringProtocol {
+        precondition(
+            allowInsertionAndDeletion || allowSubstitution,
+            "Either insertion/deletion or substitution must be allowed to compute an edit distance!"
+        )
+
         let width = count + 1
         let height = rhs.count + 1
         var matrix = Matrix<Int>(repeating: 0, width: width, height: height)
@@ -132,18 +142,40 @@ extension StringProtocol {
         for y in 1..<height {
             for x in 1..<width {
                 let equal = lhsChars[x - 1] == rhsChars[y - 1]
-                matrix[y, x] = [
-                    // Substitution
-                    matrix[y - 1, x - 1] + (equal ? 0 : 1),
-                    // Deletion
-                    matrix[y - 1, x] + 1,
-                    // Insertion
-                    matrix[y, x - 1] + 1
-                ].min()!
+                var value = Int.max
+                if allowSubstitution {
+                    value = Swift.min(
+                        value,
+                        matrix[y - 1, x - 1] + (equal ? 0 : 1)
+                    )
+                }
+                if allowInsertionAndDeletion {
+                    value = Swift.min(
+                        value,
+                        matrix[y - 1, x] + 1, // Deletion
+                        matrix[y, x - 1] + 1  // Insertion
+                    )
+                }
+                matrix[y, x] = value
             }
         }
 
         return matrix.last!
+    }
+
+    public func levenshteinDistance<S>(to rhs: S, caseSensitive: Bool = true) -> Int where S: StringProtocol {
+        editDistance(
+            to: rhs,
+            caseSensitive: caseSensitive
+        )
+    }
+
+    public func lcsDistance<S>(to rhs: S, caseSensitive: Bool = true) -> Int where S: StringProtocol {
+        editDistance(
+            to: rhs,
+            caseSensitive: caseSensitive,
+            allowSubstitution: false
+        )
     }
 
     /// Applies this string as a 'template' containing % placeholders to a list of arguments
