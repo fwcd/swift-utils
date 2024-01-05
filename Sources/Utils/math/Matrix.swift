@@ -101,6 +101,16 @@ public struct Matrix<T: IntExpressibleAlgebraicField>: Addable, Subtractable, Ha
         return t
     }
 
+    /// The element in the upper left corner of the matrix.
+    public var first: T? {
+        values.first
+    }
+
+    /// The element in the lower right corner of the matrix.
+    public var last: T? {
+        values.last
+    }
+
     public init(width: Int, height: Int, values: [T]) {
         assert(values.count == (width * height))
         self.width = width

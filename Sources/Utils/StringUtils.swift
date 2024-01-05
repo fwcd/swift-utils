@@ -117,25 +117,25 @@ extension StringProtocol {
     public func levenshteinDistance<S>(to rhs: S, caseSensitive: Bool = true) -> Int where S: StringProtocol {
         let width = count + 1
         let height = rhs.count + 1
-        var matrix = [Int](repeating: 0, count: width * height)
+        var matrix = Matrix<Int>(repeating: 0, width: width, height: height)
         let (lhsChars, rhsChars) = caseSensitive
             ? (Array(self), Array(rhs))
             : (Array(lowercased()), Array(rhs.lowercased()))
 
         for i in 0..<width {
-            matrix[i] = i
+            matrix[0, i] = i
         }
         for i in 0..<height {
-            matrix[i * width] = i
+            matrix[i, 0] = i
         }
 
         for y in 1..<height {
             for x in 1..<width {
                 let equal = lhsChars[x - 1] == rhsChars[y - 1]
-                matrix[y * width + x] = [
-                    matrix[(y - 1) * width + (x - 1)] + (equal ? 0 : 1),
-                    matrix[(y - 1) * width + x] + 1,
-                    matrix[y * width + (x - 1)] + 1
+                matrix[y, x] = [
+                    matrix[y - 1, x - 1] + (equal ? 0 : 1),
+                    matrix[y - 1, x] + 1,
+                    matrix[y, x - 1] + 1
                 ].min()!
             }
         }
