@@ -6,7 +6,7 @@ public struct Binding<Value> {
 
     public var wrappedValue: Value {
         get { _get() }
-        set { _set(newValue) }
+        nonmutating set { _set(newValue) }
     }
 
     public var projectedValue: Binding<Value> {
@@ -16,5 +16,13 @@ public struct Binding<Value> {
     public init(get: @escaping () -> Value, set: @escaping (Value) -> Void) {
         _get = get
         _set = set
+    }
+
+    public subscript<U>(dynamicMember keyPath: WritableKeyPath<Value, U>) -> Binding<U> {
+        Binding<U> {
+            wrappedValue[keyPath: keyPath]
+        } set: {
+            wrappedValue[keyPath: keyPath] = $0
+        }
     }
 }
