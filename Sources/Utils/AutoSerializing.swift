@@ -16,6 +16,15 @@ public class AutoSerializing<T: Codable> {
         }
     }
 
+    /// A strong reference to the value.
+    public var projectedValue: Binding<T> {
+        Binding { [self] in
+            wrappedValue
+        } set: { [self] in
+            wrappedValue = $0
+        }
+    }
+
     public init(wrappedValue: T, filePath: String) {
         self.filePath = filePath
         if let onDiskValue = try? serializer.readJson(as: T.self, fromFile: filePath) {
