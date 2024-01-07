@@ -13,11 +13,20 @@ public struct Binding<Value> {
         self
     }
 
+    /// Creates a binding with the given getter and setter.
     public init(get: @escaping () -> Value, set: @escaping (Value) -> Void) {
         _get = get
         _set = set
     }
 
+    /// Creates an immutable binding.
+    public static func constant(_ value: Value) -> Binding<Value> {
+        Binding {
+            value
+        } set: { _ in }
+    }
+
+    /// A binding to the value keyed under the given path.
     public subscript<U>(dynamicMember keyPath: WritableKeyPath<Value, U>) -> Binding<U> {
         Binding<U> {
             wrappedValue[keyPath: keyPath]
