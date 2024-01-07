@@ -11,17 +11,13 @@ jobs:
   build:
     strategy:
       matrix:
-        os: ['ubuntu-latest', 'macos-13']
         swift: ['5.4', '5.9']
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
+    container: swift:${{ matrix.swift }}
+
     steps:
     - uses: actions/checkout@v4
-    - name: Install Swift
-      # TODO: Use swift-actions/setup-swift once gpg failures have been fixed
-      uses: fwal/setup-swift@v1
-      with:
-        swift-version: ${{ matrix.swift }}
     - name: Build
       run: swift build
     - name: Test
