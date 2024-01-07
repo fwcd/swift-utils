@@ -12,16 +12,14 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-latest', 'macos-13']
-        swift: ['5.9']
-        include:
-        - os: 'ubuntu-latest'
-          swift: '5.4'
+        swift: ['5.4', '5.9']
 
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
     - name: Install Swift
-      uses: swift-actions/setup-swift@v1
+      # TODO: Use swift-actions/setup-swift once gpg failures have been fixed
+      uses: fwal/setup-swift@v1
       with:
         swift-version: ${{ matrix.swift }}
     - name: Build
