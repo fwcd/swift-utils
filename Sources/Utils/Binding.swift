@@ -9,6 +9,10 @@ public struct Binding<Value> {
         set { _set(newValue) }
     }
 
+    public var projectedValue: Binding<Value> {
+        self
+    }
+
     public init(get: @escaping () -> Value, set: @escaping (Value) -> Void) {
         _get = get
         _set = set
