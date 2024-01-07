@@ -2,10 +2,6 @@ import XCTest
 @testable import Utils
 
 final class BinaryHeapTests: XCTestCase {
-    static var allTests = [
-        ("testBinaryHeap", testBinaryHeap)
-    ]
-
     func testBinaryHeap() throws {
         var heap = BinaryHeap<Int>()
         heap.insert(7)

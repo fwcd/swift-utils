@@ -2,9 +2,6 @@ import XCTest
 @testable import Utils
 
 final class ComplexTests: XCTestCase {
-    static var allTests = [
-        ("testComplex", testComplex)
-    ]
     private let eps: Double = 0.001
 
     func testComplex() throws {

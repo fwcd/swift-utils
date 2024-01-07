@@ -2,10 +2,6 @@ import XCTest
 @testable import Utils
 
 final class AvlTreeTests: XCTestCase {
-    static var allTests = [
-        ("testAvlTree", testAvlTree)
-    ]
-
     func testAvlTree() throws {
         let root = AvlTree(value: 1)
         root.insert(-3)

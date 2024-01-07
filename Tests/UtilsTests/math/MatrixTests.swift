@@ -4,13 +4,6 @@ import XCTest
 fileprivate let eps = 0.0001
 
 final class MatrixTests: XCTestCase {
-    static var allTests = [
-        ("testMinor", testMinor),
-        ("testDeterminant", testDeterminant),
-        ("testRowEcholonForm", testRowEcholonForm),
-        ("testInverse", testInverse)
-    ]
-
     func testMinor() throws {
         XCTAssertEqual(Matrix<Int>([
             [4, 5, 6],

@@ -2,10 +2,6 @@ import XCTest
 @testable import Utils
 
 final class NDArrayTests: XCTestCase {
-    static var allTests = [
-        ("testNDArrayParser", testNDArrayParser)
-    ]
-
     func testNDArrayParser() throws {
         let parser = NDArrayParser()
 

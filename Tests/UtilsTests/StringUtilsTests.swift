@@ -2,11 +2,6 @@ import XCTest
 @testable import Utils
 
 final class StringUtilsTests: XCTestCase {
-    static var allTests = [
-        ("testSplitPreservingQuotes", testSplitPreservingQuotes),
-        ("testCamelHumps", testCamelHumps)
-    ]
-
     func testSplitPreservingQuotes() {
         XCTAssertEqual("this is | a string | separated by pipes".splitPreservingQuotes(by: "|"), [
             "this is ",

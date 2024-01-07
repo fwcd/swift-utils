@@ -2,10 +2,6 @@ import XCTest
 @testable import Utils
 
 final class RationalTests: XCTestCase {
-    static var allTests = [
-        ("testRational", testRational)
-    ]
-
     func testRational() throws {
         let a: Rational = 1 / 2
         let b = Rational(7, 6)

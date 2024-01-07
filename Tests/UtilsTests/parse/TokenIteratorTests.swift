@@ -2,10 +2,6 @@ import XCTest
 @testable import Utils
 
 final class TokenIteratorTests: XCTestCase {
-    static var allTests = [
-        ("testTokenIterator", testTokenIterator)
-    ]
-
     func testTokenIterator() throws {
         let fruits = ["Apple", "Orange", "Banana", "Pear", "Lemon", "Grapefruit"]
         let iterator = TokenIterator(fruits)

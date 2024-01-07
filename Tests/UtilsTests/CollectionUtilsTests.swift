@@ -2,10 +2,6 @@ import XCTest
 @testable import Utils
 
 final class CollectionUtilsTests: XCTestCase {
-    static var allTests = [
-        ("testChunks", testChunks),
-    ]
-
     func testChunks() {
         XCTAssertEqual("".chunks(ofLength: 0), [])
         XCTAssertEqual("".chunks(ofLength: 3), [])

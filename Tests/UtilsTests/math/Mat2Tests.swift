@@ -2,10 +2,6 @@ import XCTest
 @testable import Utils
 
 final class Mat2Tests: XCTestCase {
-    static var allTests = [
-        ("testMat2", testMat2)
-    ]
-
     func testMat2() throws {
         let a = Mat2(
             ix:  3, jx: 6,

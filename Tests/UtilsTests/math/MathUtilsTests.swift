@@ -2,10 +2,6 @@ import XCTest
 @testable import Utils
 
 final class MathUtilsTests: XCTestCase {
-    static var allTests = [
-        ("testLog2Floor", testLog2Floor)
-    ]
-
     func testLog2Floor() throws {
         XCTAssertEqual(UInt(1).log2Floor(), 0)
         XCTAssertEqual(UInt(2).log2Floor(), 1)

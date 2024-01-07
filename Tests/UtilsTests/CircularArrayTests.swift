@@ -2,10 +2,6 @@ import XCTest
 @testable import Utils
 
 final class CircularArrayTests: XCTestCase {
-    static var allTests = [
-        ("testCircularArray", testCircularArray)
-    ]
-
     func testCircularArray() throws {
         var a = CircularArray<String>(capacity: 5)
         XCTAssert(a.isEmpty, "\(a) should be empty after initialization")

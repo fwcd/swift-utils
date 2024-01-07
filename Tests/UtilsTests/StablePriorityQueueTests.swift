@@ -2,10 +2,6 @@ import XCTest
 @testable import Utils
 
 final class StablePriorityQueueTests: XCTestCase {
-    static var allTests = [
-        ("testStableBinaryHeap", testStableBinaryHeap)
-    ]
-
     private struct Item: Comparable, CustomStringConvertible {
         let label: String
         let id: Int

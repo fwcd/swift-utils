@@ -2,10 +2,6 @@ import XCTest
 @testable import Utils
 
 final class BitArrayTests: XCTestCase {
-    static var allTests = [
-        ("testBitArray", testBitArray)
-    ]
-
     func testBitArray() throws {
         var arr = BitArray()
         XCTAssertEqual(arr.bytes, [])
