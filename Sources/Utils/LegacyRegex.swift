@@ -1,7 +1,8 @@
 import Foundation
 
-/** A wrapper around NSRegularExpression with a more modern API. */
-@available(*, deprecated, message: "Please use the the standard library's Regex!")
+/// A wrapper around `NSRegularExpression` with a more modern API.
+///
+/// Kept around for legacy purposes. Please use the standard library's `Regex` type in new code.
 public struct LegacyRegex: CustomStringConvertible {
     private let pattern: NSRegularExpression
 
