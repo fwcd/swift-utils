@@ -1,5 +1,5 @@
-fileprivate let decimalPattern = try! Regex(from: "(-?)\\s*(\\d+)(?:\\.(\\d+))?")
-fileprivate let fractionPattern = try! Regex(from: "(-?\\s*\\d+)\\s*/\\s*(-?\\s*\\d+)")
+fileprivate let decimalPattern = try! LegacyRegex(from: "(-?)\\s*(\\d+)(?:\\.(\\d+))?")
+fileprivate let fractionPattern = try! LegacyRegex(from: "(-?\\s*\\d+)\\s*/\\s*(-?\\s*\\d+)")
 
 fileprivate let reduceThreshold = 1000
 

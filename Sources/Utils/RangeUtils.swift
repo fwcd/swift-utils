@@ -1,5 +1,5 @@
-fileprivate let intRangePattern = try! Regex(from: "(\\d+)\\.\\.<(\\d+)")
-fileprivate let closedIntRangePattern = try! Regex(from: "(\\d+)\\.\\.\\.(\\d+)")
+fileprivate let intRangePattern = try! LegacyRegex(from: "(\\d+)\\.\\.<(\\d+)")
+fileprivate let closedIntRangePattern = try! LegacyRegex(from: "(\\d+)\\.\\.\\.(\\d+)")
 
 public func parseIntRange(from str: String) -> Range<Int>? {
     if let rawBounds = intRangePattern.firstGroups(in: str) {

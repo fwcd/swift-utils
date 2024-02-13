@@ -2,7 +2,7 @@ fileprivate let rawDecimalPattern = "-?\\d+(?:\\.\\d+)?"
 fileprivate let rawFractionPattern = "-?\\d+/\\d+"
 // Order of rawFractionPattern and rawDecimalPattern below matters since
 // otherwise numerator and denominator would get parsed as separate tokens
-fileprivate let tokenPattern = try! Regex(from: "[(),]|((?:\(rawFractionPattern))|(?:\(rawDecimalPattern)))")
+fileprivate let tokenPattern = try! LegacyRegex(from: "[(),]|((?:\(rawFractionPattern))|(?:\(rawDecimalPattern)))")
 
 public struct NDArrayParser {
     public init() {}

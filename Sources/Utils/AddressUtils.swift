@@ -1,4 +1,4 @@
-fileprivate let hostPortPattern = try! Regex(from: "([^:]+)(?::(\\d+))?")
+fileprivate let hostPortPattern = try! LegacyRegex(from: "([^:]+)(?::(\\d+))?")
 
 public func parseHostPort(from raw: String) -> (String, Int32?)? {
     hostPortPattern.firstGroups(in: raw).map {

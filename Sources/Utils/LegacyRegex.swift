@@ -1,7 +1,8 @@
 import Foundation
 
 /** A wrapper around NSRegularExpression with a more modern API. */
-public struct Regex: CustomStringConvertible {
+@available(*, deprecated, message: "Please use the the standard library's Regex!")
+public struct LegacyRegex: CustomStringConvertible {
     private let pattern: NSRegularExpression
 
     public var caseSensitive: Bool { !pattern.options.contains(.caseInsensitive) }
