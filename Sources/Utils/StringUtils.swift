@@ -2,7 +2,7 @@ import Foundation
 
 fileprivate let asciiCharacters = CharacterSet(charactersIn: " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~")
 fileprivate let quotes = CharacterSet(charactersIn: "\"'`")
-fileprivate let markdownEscapable = try! Regex("[\\[\\]*_]")
+fileprivate let markdownEscapable = #/[\[\]*_]/#
 
 extension StringProtocol {
     public var withFirstUppercased: String {
@@ -10,7 +10,7 @@ extension StringProtocol {
     }
 
     public var markdownEscaped: String {
-        String(self).replacing(markdownEscapable, with: { "\\\($0[0])" })
+        String(self).replacing(markdownEscapable, with: { "\\\($0.0)" })
     }
 
     public var camelHumps: [String] {

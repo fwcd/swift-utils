@@ -1,5 +1,5 @@
-fileprivate let decimalPattern = try! Regex("(-?)\\s*(\\d+)(?:\\.(\\d+))?")
-fileprivate let fractionPattern = try! Regex("(-?\\s*\\d+)\\s*/\\s*(-?\\s*\\d+)")
+fileprivate let decimalPattern = #/(?<sign>-?)\s*(?<characteristic>\d+)(?:\.(?<mantissa>\d+))?/#
+fileprivate let fractionPattern = #/(?<numerator>-?\s*\d+)\\s*/\s*(?<denominator>-?\s*\d+)/#
 
 fileprivate let reduceThreshold = 1000
 
@@ -19,14 +19,14 @@ public struct Rational: SignedNumeric, Addable, Subtractable, Multipliable, Divi
 
     public init?(_ string: String) {
         if let parsedFraction = try? fractionPattern.firstMatch(in: string) {
-            guard let numerator = Int(parsedFraction[1].substring!),
-                let denominator = Int(parsedFraction[2].substring!),
+            guard let numerator = Int(parsedFraction.numerator),
+                let denominator = Int(parsedFraction.denominator),
                 denominator != 0 else { return nil }
             self.init(numerator, denominator)
         } else if let parsedDecimal = try? decimalPattern.firstMatch(in: string) {
-            let rawSign = parsedDecimal[1].substring ?? ""
-            let rawCharacteristic = parsedDecimal[2].substring ?? ""
-            let rawMantissa = parsedDecimal[3].substring ?? ""
+            let rawSign = parsedDecimal.sign
+            let rawCharacteristic = parsedDecimal.characteristic
+            let rawMantissa = parsedDecimal.mantissa ?? ""
             let sign = rawSign == "-" ? -1 : 1
             let factor = 10 ** rawMantissa.count
             guard let characteristic = Int(rawCharacteristic), factor != 0 else { return nil }
