@@ -188,3 +188,9 @@ public struct Rational: SignedNumeric, Addable, Subtractable, Multipliable, Divi
         return res
     }
 }
+
+extension Double {
+    public init(_ rational: Rational) {
+        self = rational.asDouble
+    }
+}
