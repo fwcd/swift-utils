@@ -2,7 +2,7 @@ fileprivate let rawDecimalPattern = "-?\\d+(?:\\.\\d+)?"
 fileprivate let rawFractionPattern = "-?\\d+/\\d+"
 // Order of rawFractionPattern and rawDecimalPattern below matters since
 // otherwise numerator and denominator would get parsed as separate tokens
-fileprivate let tokenPattern = try! LegacyRegex(from: "[(),]|((?:\(rawFractionPattern))|(?:\(rawDecimalPattern)))")
+fileprivate let tokenPattern = try! Regex("[(),]|((?:\(rawFractionPattern))|(?:\(rawDecimalPattern)))")
 
 public struct NDArrayParser {
     public init() {}
@@ -24,7 +24,8 @@ public struct NDArrayParser {
     }
 
     private func tokenize(_ input: String) -> TokenIterator<String> {
-        let rawTokens = tokenPattern.matches(in: input).map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        let matches: [AnyRegexOutput] = input.matches(of: tokenPattern).map(\.output)
+        let rawTokens = matches.map { $0[0].substring!.trimmingCharacters(in: .whitespacesAndNewlines) }
         return TokenIterator(rawTokens)
     }
 
