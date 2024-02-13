@@ -1,5 +1,5 @@
 fileprivate let decimalPattern = #/(?<sign>-?)\s*(?<characteristic>\d+)(?:\.(?<mantissa>\d+))?/#
-fileprivate let fractionPattern = #/(?<numerator>-?\s*\d+)\\s*/\s*(?<denominator>-?\s*\d+)/#
+fileprivate let fractionPattern = #/(?<numerator>-?\s*\d+)\s*/\s*(?<denominator>-?\s*\d+)/#
 
 fileprivate let reduceThreshold = 1000
 
