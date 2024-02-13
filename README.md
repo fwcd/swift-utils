@@ -26,8 +26,7 @@ A large collection of general-purpose utilities for Swift, including:
 * Collection utilities
     * Token iterators with lookahead and lookbehind
     * A wide range of extension functions
-* String utilities
-    * Regex wrappers
+* String processing
     * Edit distances (Levenshtein, LCS)
     * A wide range of extension functions
 * System interfacing
