@@ -161,6 +161,21 @@ public class Promise<T, E> where E: Error {
             listen(continuation.resume(with:))
         }
     }
+
+    /// Fetches the result asynchronously and logs an error if absent.
+    public func getOrLogError(file: String = #file, line: Int = #line) async -> T? {
+        await withCheckedContinuation { continuation in
+            listen {
+                switch $0 {
+                    case .success(let value):
+                        continuation.resume(returning: value)
+                    case .failure(let error):
+                        log.error("Asynchronous error (fetched at \(file):\(line)): \(error)")
+                        continuation.resume(returning: nil)
+                }
+            }
+        }
+    }
 }
 
 extension Promise where E == Error {
