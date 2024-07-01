@@ -73,6 +73,12 @@ public struct HTTPRequest {
         self.init(request: request, session: session)
     }
 
+    /// Runs the request and asynchronously returns the response.
+    public func run() async throws -> Data {
+        try await runAsync().get()
+    }
+
+    /// Runs the request and returns a `Promise` with the response.
     public func runAsync() -> Promise<Data, Error> {
         Promise { then in
             let session = session ?? URLSession.shared
@@ -91,6 +97,12 @@ public struct HTTPRequest {
         }
     }
 
+    /// Runs the request and asynchronously returns the UTF-8-decoded response.
+    public func fetchUTF8() async throws -> String {
+        try await fetchUTF8Async().get()
+    }
+
+    /// Runs the request and returns a `Promise` with the UTF-8-decoded response.
     public func fetchUTF8Async() -> Promise<String, Error> {
         runAsync().mapCatching {
             if let utf8 = String(data: $0, encoding: .utf8) {
@@ -101,6 +113,13 @@ public struct HTTPRequest {
         }
     }
 
+    /// Runs the request and asynchronously decodes the response as JSON.
+    public func fetchJSON<T>(as type: T.Type) async throws -> T where T: Decodable {
+        try await fetchJSONAsync(as: type).get()
+    }
+
+    /// Runs the request and returns a `Promise` with the value decoded from the
+    /// response interpreted as JSON.
     public func fetchJSONAsync<T>(as type: T.Type) -> Promise<T, Error> where T: Decodable {
         runAsync().mapCatching {
             do {
@@ -111,10 +130,18 @@ public struct HTTPRequest {
         }
     }
 
+    /// Runs the request and asynchronously decodes the response as XML.
+    public func fetchXML<T>(as type: T.Type) async throws -> T where T: Decodable {
+        try await fetchXMLAsync(as: type).get()
+    }
+
+    /// Runs the request and returns a `Promise` with the value decoded from the
+    /// response interpreted as XML.
     public func fetchXMLAsync<T>(as type: T.Type) -> Promise<T, Error> where T: Decodable {
         runAsync().mapCatching { try XMLDecoder().decode(type, from: $0) }
     }
 
+    /// Runs the request and interprets the response as XML via the given delegate.
     public func fetchXMLAsync(using delegate: XMLParserDelegate) {
         runAsync().listen {
             switch $0 {
@@ -133,6 +160,12 @@ public struct HTTPRequest {
         }
     }
 
+    /// Runs the request and asynchronously parses the response as HTML.
+    public func fetchHTML() async throws -> Document {
+        try await fetchHTMLAsync().get()
+    }
+
+    /// Runs the request and returns a `Promise` with the parsed HTML document.
     public func fetchHTMLAsync() -> Promise<Document, Error> {
         fetchUTF8Async().mapCatching { try SwiftSoup.parse($0) }
     }
