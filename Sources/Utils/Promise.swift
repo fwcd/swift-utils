@@ -154,6 +154,13 @@ public class Promise<T, E> where E: Error {
         semaphore.wait()
         return try result.get()
     }
+
+    /// Fetches the result asynchronously.
+    public func get() async throws -> T {
+        try await withCheckedThrowingContinuation { continuation in
+            listen(continuation.resume(with:))
+        }
+    }
 }
 
 extension Promise where E == Error {
