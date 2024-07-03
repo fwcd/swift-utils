@@ -7,8 +7,8 @@ import Foundation
 /// through a supplied getter.
 public struct AsyncLazyExpiring<T> {
     public let expiryInterval: TimeInterval
-    public private(set) var nextExpiry: Date!
-    private var expired: Bool { nextExpiry.timeIntervalSinceNow < 0 }
+    public private(set) var nextExpiry: Date? = nil
+    private var expired: Bool { nextExpiry.map { $0.timeIntervalSinceNow < 0 } ?? true }
 
     private let getter: () async throws -> T
     private var cachedValue: T?
