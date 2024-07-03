@@ -1,7 +1,7 @@
 import XCTest
 @testable import Utils
 
-final class StringUtilsTests: XCTestCase {
+final class StringExtensionsTests: XCTestCase {
     func testSplitPreservingQuotes() {
         XCTAssertEqual("this is | a string | separated by pipes".splitPreservingQuotes(by: "|"), [
             "this is ",
