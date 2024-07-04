@@ -1,6 +1,7 @@
 # Swift Utils
 
 [![Build](https://github.com/fwcd/swift-utils/actions/workflows/build.yml/badge.svg)](https://github.com/fwcd/swift-utils/actions/workflows/build.yml)
+[![Docs](https://github.com/fwcd/swift-utils/actions/workflows/docs.yml/badge.svg)](https://fwcd.github.io/swift-utils/documentation/utils)
 
 A large collection of general-purpose utilities for Swift, including:
 
