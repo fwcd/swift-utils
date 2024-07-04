@@ -74,6 +74,7 @@ public struct HTTPRequest {
     }
 
     /// Runs the request and asynchronously returns the response.
+    @discardableResult
     public func run() async throws -> Data {
         try await runAsync().get()
     }
