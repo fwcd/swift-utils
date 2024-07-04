@@ -1,4 +1,4 @@
-public struct AnyCodingKey: CodingKey {
+public struct AnyCodingKey: CodingKey, Hashable {
     public let stringValue: String
     public let intValue: Int?
 
