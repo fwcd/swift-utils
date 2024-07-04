@@ -1,4 +1,4 @@
-public protocol LowBoundedIntRange: Sequence {
+public protocol LowBoundedIntRange: Sequence<Int> {
     var count: Int { get }
     var lowerBound: Int { get }
 }
