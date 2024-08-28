@@ -15,7 +15,6 @@ A large collection of general-purpose utilities for Swift, including:
     * Locks
     * Lazy dictionaries
     * Bidirectional dictionaries
-    * Geographical coordinates
 * Numerical utilities
     * N-dimensional arrays (including vectors and matrices)
     * Invertible operations
