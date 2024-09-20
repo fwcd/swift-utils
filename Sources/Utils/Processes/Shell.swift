@@ -1,5 +1,5 @@
 import Foundation
-import Logging
+@preconcurrency import Logging
 
 fileprivate let log = Logger(label: "Utils.Shell")
 
@@ -14,7 +14,7 @@ public struct Shell {
         args: [String]? = nil,
         useBash: Bool = false,
         withPipedOutput: Bool = false,
-        then terminationHandler: ((Process, Pipe?) -> Void)? = nil
+        then terminationHandler: (@Sendable (Process, Pipe?) -> Void)? = nil
     ) -> (Pipe?, Process) {
         var pipe: Pipe? = nil
         let process = Process()
@@ -28,13 +28,14 @@ public struct Shell {
 
         process.arguments = (useBash ? ["-c", executable] : []) + (args ?? [])
 
-        if let handler = terminationHandler {
-            process.terminationHandler = { handler($0, pipe) }
-        }
-
         if withPipedOutput {
             pipe = Pipe()
             process.standardOutput = pipe
+        }
+
+        if let handler = terminationHandler {
+            let pipe = pipe
+            process.terminationHandler = { handler($0, pipe) }
         }
 
         return (pipe, process)
@@ -90,7 +91,7 @@ public struct Shell {
         args: [String]? = nil,
         useBash: Bool = false,
         withPipedOutput: Bool = false,
-        then terminationHandler: ((Process, Pipe?) -> Void)? = nil
+        then terminationHandler: (@Sendable (Process, Pipe?) -> Void)? = nil
     ) throws {
         try execute(process: newProcess(executable, in: directory, args: args, useBash: useBash, withPipedOutput: withPipedOutput, then: terminationHandler).1)
     }
