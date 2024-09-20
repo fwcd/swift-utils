@@ -1,18 +1,19 @@
 import Dispatch
-import Logging
+@preconcurrency import Logging
 
 fileprivate let log = Logger(label: "Utils.Promise")
 
 /// Represents an asynchronously computed value.
 ///
-/// Promises are executed immediately, i.e. is body
-/// runs synchronously with the constructor, similar
-/// to e.g. JavaScript's promises, but different from
+/// Promises are executed immediately, i.e. is body runs synchronously with the
+/// constructor, similar to e.g. JavaScript's promises, but different from
 /// Python/Rust.
-public class Promise<T, E> where E: Error {
+///
+/// Sendable safety: Promises are sendable because they guard their internal state with a mutex.
+public final class Promise<T, E>: @unchecked Sendable where T: Sendable, E: Error {
     private let mutex = MutexLock()
     private var state: State
-    private var listeners: [(Result<T, E>) -> Void] = []
+    private var listeners: [@Sendable (Result<T, E>) -> Void] = []
     private var wasListenedTo: Bool = false
 
     /// Creates a finished, succeeded promise.
@@ -27,10 +28,11 @@ public class Promise<T, E> where E: Error {
 
     /// Creates a promise from the given thenable and
     /// synchronously begins running it.
-    public required init(_ thenable: (@escaping (Result<T, E>) -> Void) -> Void) {
+    public required init(_ thenable: (@Sendable @escaping (Result<T, E>) -> Void) -> Void) {
         state = .pending
+        let mutex = self.mutex
         thenable { result in
-            self.mutex.lock {
+            mutex.lock {
                 self.state = .finished(result)
                 for listener in self.listeners {
                     listener(result)
@@ -53,13 +55,13 @@ public class Promise<T, E> where E: Error {
         }
     }
 
-    private enum State {
+    private enum State: Sendable {
         case pending
         case finished(Result<T, E>)
     }
 
     /// Listens for the result. Only fires once.
-    public func listen(_ listener: @escaping (Result<T, E>) -> Void) {
+    public func listen(_ listener: @Sendable @escaping (Result<T, E>) -> Void) {
         mutex.lock {
             wasListenedTo = true
             if case let .finished(result) = state {
@@ -71,7 +73,7 @@ public class Promise<T, E> where E: Error {
     }
 
     /// Listens for a successful result or logs an error otherwise. Only fires once.
-    public func listenOrLogError(file: String = #file, line: Int = #line, _ listener: @escaping (T) -> Void) {
+    public func listenOrLogError(file: String = #file, line: Int = #line, _ listener: @Sendable @escaping (T) -> Void) {
         listen {
             switch $0 {
                 case .success(let value):
@@ -83,13 +85,13 @@ public class Promise<T, E> where E: Error {
     }
 
     /// Listens for the result. Only fires once. Returns the promise.
-    public func peekListen(_ listener: @escaping (Result<T, E>) -> Void) -> Self {
+    public func peekListen(_ listener: @Sendable @escaping (Result<T, E>) -> Void) -> Self {
         listen(listener)
         return self
     }
 
     /// Chains another asynchronous computation after this one.
-    public func then<U>(_ next: @escaping (T) -> Promise<U, E>) -> Promise<U, E> {
+    public func then<U>(_ next: @Sendable @escaping (T) -> Promise<U, E>) -> Promise<U, E> {
         Promise<U, E> { then in
             listen {
                 switch $0 {
@@ -103,7 +105,7 @@ public class Promise<T, E> where E: Error {
     }
 
     /// Chains another synchronous computation after this one.
-    public func map<U>(_ transform: @escaping (T) -> U) -> Promise<U, E> {
+    public func map<U>(_ transform: @Sendable @escaping (T) -> U) -> Promise<U, E> {
         Promise<U, E> { then in
             listen {
                 then($0.map(transform))
@@ -112,7 +114,7 @@ public class Promise<T, E> where E: Error {
     }
 
     /// Chains another synchronous computation after this one.
-    public func mapResult<U>(_ transform: @escaping (Result<T, E>) -> Result<U, E>) -> Promise<U, E> {
+    public func mapResult<U>(_ transform: @Sendable @escaping (Result<T, E>) -> Result<U, E>) -> Promise<U, E> {
         Promise<U, E> { then in
             listen {
                 then(transform($0))
@@ -144,7 +146,10 @@ public class Promise<T, E> where E: Error {
     /// might result in a deadlock.
     public func wait() throws -> T {
         let semaphore = DispatchSemaphore(value: 0)
-        var result: Result<T, E>!
+
+        // Safety: Since `listen` only fires once, the variable will only be
+        // mutated by a single thread and not concurrently.
+        nonisolated(unsafe) var result: Result<T, E>!
 
         listen {
             result = $0
@@ -158,7 +163,9 @@ public class Promise<T, E> where E: Error {
     /// Fetches the result asynchronously.
     public func get() async throws -> T {
         try await withCheckedThrowingContinuation { continuation in
-            listen(continuation.resume(with:))
+            listen {
+                continuation.resume(with: $0)
+            }
         }
     }
 
@@ -190,7 +197,7 @@ extension Promise where E == Error {
     }
 
     /// Creates another promise from mapping the current one with a callback that may synchronously throw.
-    public func mapCatching<U>(_ transform: @escaping (T) throws -> U) -> Promise<U, E> {
+    public func mapCatching<U>(_ transform: @Sendable @escaping (T) throws -> U) -> Promise<U, E> {
         then { x in
             .catching {
                 try transform(x)
@@ -199,7 +206,7 @@ extension Promise where E == Error {
     }
 
     /// Chains another promise with a callback that may synchronously throw.
-    public func thenCatching<U>(_ next: @escaping (T) throws -> Promise<U, Error>) -> Promise<U, Error> {
+    public func thenCatching<U>(_ next: @Sendable @escaping (T) throws -> Promise<U, Error>) -> Promise<U, Error> {
         then { x in
             .catchingThen {
                 try next(x)
