@@ -1,5 +1,5 @@
 import Foundation
-import SwiftSoup
+@preconcurrency import SwiftSoup
 
 /**
  * Converts HTML documents into Markdown.

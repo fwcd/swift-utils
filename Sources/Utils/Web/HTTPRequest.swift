@@ -5,7 +5,7 @@ import FoundationNetworking
 #if canImport(FoundationXML)
 import FoundationXML
 #endif
-import SwiftSoup
+@preconcurrency import SwiftSoup
 import XMLCoder
 
 public struct HTTPRequest {
