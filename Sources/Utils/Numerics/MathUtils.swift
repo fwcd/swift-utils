@@ -1,5 +1,5 @@
 import Foundation
-import Logging
+@preconcurrency import Logging
 
 fileprivate let log = Logger(label: "Utils.MathUtils")
 

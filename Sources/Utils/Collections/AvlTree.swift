@@ -1,4 +1,4 @@
-import Logging
+@preconcurrency import Logging
 
 fileprivate let log = Logger(label: "Utils.AvlTree")
 
