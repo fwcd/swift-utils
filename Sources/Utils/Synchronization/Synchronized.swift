@@ -4,9 +4,9 @@ import Dispatch
  * A value with synchronized get/set.
  */
 @propertyWrapper
-public struct Synchronized<T> {
+public struct Synchronized<T>: Sendable {
     private let semaphore = DispatchSemaphore(value: 1)
-    private var storedValue: T
+    nonisolated(unsafe) private var storedValue: T
     public var wrappedValue: T {
         get {
             semaphore.wait()
