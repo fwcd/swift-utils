@@ -1,5 +1,5 @@
-fileprivate let intRangePattern = #/(\d+)\.\.<(\d+)/#
-fileprivate let closedIntRangePattern = #/(\d+)\.\.\.(\d+)/#
+nonisolated(unsafe) fileprivate let intRangePattern = #/(\d+)\.\.<(\d+)/#
+nonisolated(unsafe) fileprivate let closedIntRangePattern = #/(\d+)\.\.\.(\d+)/#
 
 public func parseIntRange(from str: String) -> Range<Int>? {
     if let rawBounds = try? intRangePattern.firstMatch(in: str) {

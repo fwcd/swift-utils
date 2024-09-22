@@ -1,4 +1,4 @@
-fileprivate let hostPortPattern = #/([^:]+)(?::(\d+))?/#
+nonisolated(unsafe) fileprivate let hostPortPattern = #/([^:]+)(?::(\d+))?/#
 
 public func parseHostPort(from raw: String) -> (String, Int32?)? {
     (try? hostPortPattern.firstMatch(in: raw)).map {
