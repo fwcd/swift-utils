@@ -115,13 +115,13 @@ public struct HTTPRequest {
     }
 
     /// Runs the request and asynchronously decodes the response as JSON.
-    public func fetchJSON<T>(as type: T.Type) async throws -> T where T: Decodable {
+    public func fetchJSON<T>(as type: T.Type) async throws -> T where T: Decodable & Sendable {
         try await fetchJSONAsync(as: type).get()
     }
 
     /// Runs the request and returns a `Promise` with the value decoded from the
     /// response interpreted as JSON.
-    public func fetchJSONAsync<T>(as type: T.Type) -> Promise<T, Error> where T: Decodable {
+    public func fetchJSONAsync<T>(as type: T.Type) -> Promise<T, Error> where T: Decodable & Sendable {
         runAsync().mapCatching {
             do {
                 return try JSONDecoder().decode(type, from: $0)
@@ -132,18 +132,18 @@ public struct HTTPRequest {
     }
 
     /// Runs the request and asynchronously decodes the response as XML.
-    public func fetchXML<T>(as type: T.Type) async throws -> T where T: Decodable {
+    public func fetchXML<T>(as type: T.Type) async throws -> T where T: Decodable & Sendable {
         try await fetchXMLAsync(as: type).get()
     }
 
     /// Runs the request and returns a `Promise` with the value decoded from the
     /// response interpreted as XML.
-    public func fetchXMLAsync<T>(as type: T.Type) -> Promise<T, Error> where T: Decodable {
+    public func fetchXMLAsync<T>(as type: T.Type) -> Promise<T, Error> where T: Decodable & Sendable {
         runAsync().mapCatching { try XMLDecoder().decode(type, from: $0) }
     }
 
     /// Runs the request and interprets the response as XML via the given delegate.
-    public func fetchXMLAsync(using delegate: XMLParserDelegate) {
+    public func fetchXMLAsync(using delegate: any XMLParserDelegate & Sendable) {
         runAsync().listen {
             switch $0 {
                 case .success(let data):
