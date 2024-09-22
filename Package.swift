@@ -1,4 +1,4 @@
-// swift-tools-version:5.7
+// swift-tools-version:5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -16,9 +16,9 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/apple/swift-docc-plugin.git", from: "1.1.0"),
-        .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.0.0"),
-        .package(url: "https://github.com/apple/swift-log.git", from: "1.4.0"),
-        .package(url: "https://github.com/MaxDesiatov/XMLCoder.git", from: "0.12.0"),
+        .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.7.5"),
+        .package(url: "https://github.com/apple/swift-log.git", from: "1.6.0"),
+        .package(url: "https://github.com/MaxDesiatov/XMLCoder.git", from: "0.17.1"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.

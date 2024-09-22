@@ -1,7 +1,7 @@
 import Dispatch
 
 /// A basic synchronization primitive.
-public struct MutexLock {
+public struct MutexLock: Sendable {
     private let semaphore = DispatchSemaphore(value: 1)
 
     /// Acquires the lock for the duration of the given block.

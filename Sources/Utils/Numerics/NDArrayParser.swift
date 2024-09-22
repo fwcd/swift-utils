@@ -1,10 +1,10 @@
 import RegexBuilder
 
-fileprivate let rawDecimalPattern = #/-?\d+(?:\.\d+)?/#
-fileprivate let rawFractionPattern = #/-?\d+/\d+/#
+nonisolated(unsafe) fileprivate let rawDecimalPattern = #/-?\d+(?:\.\d+)?/#
+nonisolated(unsafe) fileprivate let rawFractionPattern = #/-?\d+/\d+/#
 // Order of rawFractionPattern and rawDecimalPattern below matters since
 // otherwise numerator and denominator would get parsed as separate tokens
-fileprivate let tokenPattern = Regex {
+nonisolated(unsafe) fileprivate let tokenPattern = Regex {
     ChoiceOf {
         #/[(),]/#
         rawFractionPattern

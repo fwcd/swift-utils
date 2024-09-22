@@ -2,7 +2,7 @@ import Foundation
 
 fileprivate let asciiCharacters = CharacterSet(charactersIn: " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~")
 fileprivate let quotes = CharacterSet(charactersIn: "\"'`")
-fileprivate let markdownEscapable = #/[\[\]*_]/#
+nonisolated(unsafe) fileprivate let markdownEscapable = #/[\[\]*_]/#
 
 extension StringProtocol {
     public var withFirstUppercased: String {
