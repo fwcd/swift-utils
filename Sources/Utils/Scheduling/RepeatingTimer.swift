@@ -1,6 +1,9 @@
 import Dispatch
 
+@MainActor
 fileprivate var globalTimerIndex: Int = 0
+
+// TODO: Reimplement this in terms of Swift Concurrency
 
 public class RepeatingTimer {
     public let interval: DispatchTimeInterval
@@ -17,6 +20,7 @@ public class RepeatingTimer {
         }
     }
 
+    @MainActor
     public func schedule(nTimes n: Int = 1, beginImmediately: Bool = true, action: @escaping (Int, TimerContext) -> Void) {
         // (Re)start timer
         let queue = DispatchQueue(label: "RepeatingTimer #\(globalTimerIndex)")
