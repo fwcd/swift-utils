@@ -7,9 +7,11 @@ import Dispatch
 public func all<T, E>(promises: [Promise<T, E>]) -> Promise<[T], E> where E: Error {
     Promise { then in
         let queue = DispatchQueue(label: "all(promises:)")
-        var values = [T]()
-        var remaining = Synchronized(wrappedValue: promises.count)
-        var failed = false
+
+        // Safety: All accesses to the state are via the queue, thus synchronized
+        nonisolated(unsafe) var values = [T]()
+        nonisolated(unsafe) var remaining = promises.count
+        nonisolated(unsafe) var failed = false
 
         for promise in promises {
             promise.listen { result in
@@ -17,8 +19,8 @@ public func all<T, E>(promises: [Promise<T, E>]) -> Promise<[T], E> where E: Err
                     switch result {
                         case let .success(value):
                             values.append(value)
-                            remaining.wrappedValue -= 1
-                            if remaining.wrappedValue == 0 && !failed {
+                            remaining -= 1
+                            if remaining == 0 && !failed {
                                 then(.success(values))
                             }
                         case let .failure(error):
@@ -35,7 +37,11 @@ public func all<T, E>(promises: [Promise<T, E>]) -> Promise<[T], E> where E: Err
 
 /// Sequentially executes the promises.
 @discardableResult
-public func sequence<T, C, E>(promises: C) -> Promise<[T], E> where E: Error, C: Collection, C.Element == (() -> Promise<T, E>) {
+public func sequence<T, C, E>(promises: C) -> Promise<[T], E>
+where E: Error,
+      C: Collection & Sendable,
+      C.SubSequence: Sendable,
+      C.Element == (() -> Promise<T, E>) {
     if let promise = promises.first {
         return promise().then { value in sequence(promises: promises.dropFirst()).map { [value] + $0 } }
     } else {
