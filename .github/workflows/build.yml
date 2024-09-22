@@ -11,7 +11,7 @@ jobs:
   build:
     strategy:
       matrix:
-        swift: ['5.9', '5.10', '6.0']
+        swift: ['5.10', '6.0']
 
     runs-on: ubuntu-latest
     container: swift:${{ matrix.swift }}
