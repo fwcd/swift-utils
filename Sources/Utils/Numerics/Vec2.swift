@@ -1,11 +1,8 @@
-public struct Vec2<T: IntExpressibleAlgebraicField>: Addable, Subtractable, Multipliable, Divisible, Negatable, Hashable, CustomStringConvertible {
+public struct Vec2<T>: CustomStringConvertible {
     public var x: T
     public var y: T
 
     public var asTuple: (x: T, y: T) { (x: x, y: y) }
-    public var asNDArray: NDArray<T> { NDArray([x, y]) }
-    public var xInverted: Vec2<T> { Vec2(x: -x, y: y) }
-    public var yInverted: Vec2<T> { Vec2(x: x, y: -y) }
     public var description: String { "(\(x), \(y))" }
 
     public init(x: T = 0, y: T = 0) {
@@ -22,56 +19,7 @@ public struct Vec2<T: IntExpressibleAlgebraicField>: Addable, Subtractable, Mult
 
     public func mapBoth(_ fx: (T) throws -> T, _ fy: (T) throws -> T) rethrows -> Vec2<T> { try Vec2(x: fx(x), y: fy(y)) }
 
-    public static func zero() -> Vec2<T> { Vec2(x: 0, y: 0) }
-
-    public static func +(lhs: Vec2<T>, rhs: Vec2<T>) -> Vec2<T> { Vec2(x: lhs.x + rhs.x, y: lhs.y + rhs.y) }
-
-    public static func -(lhs: Vec2<T>, rhs: Vec2<T>) -> Vec2<T> { Vec2(x: lhs.x - rhs.x, y: lhs.y - rhs.y) }
-
-    public static func *(lhs: Vec2<T>, rhs: Vec2<T>) -> Vec2<T> { Vec2(x: lhs.x * rhs.x, y: lhs.y * rhs.y) }
-
-    public static func /(lhs: Vec2<T>, rhs: Vec2<T>) -> Vec2<T> { Vec2(x: lhs.x / rhs.x, y: lhs.y / rhs.y) }
-
-    public static func *(lhs: Vec2<T>, rhs: T) -> Vec2<T> { Vec2(x: lhs.x * rhs, y: lhs.y * rhs) }
-
-    public static func /(lhs: Vec2<T>, rhs: T) -> Vec2<T> { Vec2(x: lhs.x / rhs, y: lhs.y / rhs) }
-
-    public prefix static func -(operand: Vec2<T>) -> Vec2<T> { Vec2(x: -operand.x, y: -operand.y) }
-
-    public static func +=(lhs: inout Vec2<T>, rhs: Vec2<T>) {
-        lhs.x += rhs.x
-        lhs.y += rhs.y
-    }
-
-    public static func -=(lhs: inout Vec2<T>, rhs: Vec2<T>) {
-        lhs.x -= rhs.x
-        lhs.y -= rhs.y
-    }
-
-    public static func *=(lhs: inout Vec2<T>, rhs: Vec2<T>) {
-        lhs.x *= rhs.x
-        lhs.y *= rhs.y
-    }
-
-    public static func /=(lhs: inout Vec2<T>, rhs: Vec2<T>) {
-        lhs.x /= rhs.x
-        lhs.y /= rhs.y
-    }
-
-    public mutating func negate() {
-        x.negate()
-        y.negate()
-    }
-
-    public func dot(_ other: Vec2<T>) -> T {
-        (x * other.x) + (y * other.y)
-    }
-
-    public func cross(_ other: Vec2<T>) -> T {
-        (x * other.y) - (y * other.x)
-    }
-
-    public func map<R: IntExpressibleAlgebraicField>(mapper: (T) -> R) -> Vec2<R> {
+    public func map<R>(mapper: (T) -> R) -> Vec2<R> {
         Vec2<R>(x: mapper(x), y: mapper(y))
     }
 
@@ -84,11 +32,91 @@ public struct Vec2<T: IntExpressibleAlgebraicField>: Addable, Subtractable, Mult
     }
 }
 
+extension Vec2: Equatable where T: Equatable {}
+extension Vec2: Hashable where T: Hashable {}
+
+extension Vec2 where T: ExpressibleByIntegerLiteral {
+    public static func zero() -> Vec2<T> { Vec2(x: 0, y: 0) }
+}
+
+extension Vec2 where T: IntExpressibleAlgebraicField {
+    public var asNDArray: NDArray<T> { NDArray([x, y]) }
+}
+
+extension Vec2: Addable where T: Addable {
+    public static func +(lhs: Vec2<T>, rhs: Vec2<T>) -> Vec2<T> { Vec2(x: lhs.x + rhs.x, y: lhs.y + rhs.y) }
+
+    public static func +=(lhs: inout Vec2<T>, rhs: Vec2<T>) {
+        lhs.x += rhs.x
+        lhs.y += rhs.y
+    }
+}
+
+extension Vec2: Subtractable where T: Subtractable {
+    public static func -(lhs: Vec2<T>, rhs: Vec2<T>) -> Vec2<T> { Vec2(x: lhs.x - rhs.x, y: lhs.y - rhs.y) }
+
+    public static func -=(lhs: inout Vec2<T>, rhs: Vec2<T>) {
+        lhs.x -= rhs.x
+        lhs.y -= rhs.y
+    }
+}
+
+extension Vec2: Multipliable where T: Multipliable {
+    public static func *(lhs: Vec2<T>, rhs: Vec2<T>) -> Vec2<T> { Vec2(x: lhs.x * rhs.x, y: lhs.y * rhs.y) }
+
+    public static func *(lhs: Vec2<T>, rhs: T) -> Vec2<T> { Vec2(x: lhs.x * rhs, y: lhs.y * rhs) }
+
+    public static func *=(lhs: inout Vec2<T>, rhs: Vec2<T>) {
+        lhs.x *= rhs.x
+        lhs.y *= rhs.y
+    }
+}
+
+extension Vec2: Divisible where T: Divisible {
+    public static func /(lhs: Vec2<T>, rhs: Vec2<T>) -> Vec2<T> { Vec2(x: lhs.x / rhs.x, y: lhs.y / rhs.y) }
+
+    public static func /(lhs: Vec2<T>, rhs: T) -> Vec2<T> { Vec2(x: lhs.x / rhs, y: lhs.y / rhs) }
+
+    public static func /=(lhs: inout Vec2<T>, rhs: Vec2<T>) {
+        lhs.x /= rhs.x
+        lhs.y /= rhs.y
+    }
+}
+
+extension Vec2: Negatable where T: Negatable {
+    public mutating func negate() {
+        x.negate()
+        y.negate()
+    }
+
+    public prefix static func -(operand: Vec2<T>) -> Vec2<T> { Vec2(x: -operand.x, y: -operand.y) }
+}
+
+extension Vec2 where T: Multipliable & Addable {
+    public func dot(_ other: Vec2<T>) -> T {
+        (x * other.x) + (y * other.y)
+    }
+}
+
+extension Vec2 where T: Multipliable & Subtractable {
+    public func cross(_ other: Vec2<T>) -> T {
+        (x * other.y) - (y * other.x)
+    }
+}
+
+extension Vec2 where T: Negatable {
+    public var xInverted: Vec2<T> { Vec2(x: -x, y: y) }
+    public var yInverted: Vec2<T> { Vec2(x: x, y: -y) }
+}
+
 extension Vec2 where T: BinaryFloatingPoint {
     public var squaredMagnitude: T { ((x * x) + (y * y)) }
     public var magnitude: T { squaredMagnitude.squareRoot() }
-    public var normalized: Vec2<T> { self / magnitude }
     public var floored: Vec2<Int> { Vec2<Int>(x: Int(x.rounded(.down)), y: Int(y.rounded(.down))) }
+}
+
+extension Vec2 where T: BinaryFloatingPoint & Divisible {
+    public var normalized: Vec2<T> { self / magnitude }
 }
 
 extension Vec2 where T: BinaryInteger {
