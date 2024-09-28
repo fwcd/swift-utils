@@ -64,6 +64,8 @@ extension Vec2: Subtractable where T: Subtractable {
 extension Vec2: Multipliable where T: Multipliable {
     public static func *(lhs: Vec2<T>, rhs: Vec2<T>) -> Vec2<T> { Vec2(x: lhs.x * rhs.x, y: lhs.y * rhs.y) }
 
+    public static func *(lhs: T, rhs: Vec2<T>) -> Vec2<T> { Vec2(x: lhs * rhs.x, y: lhs * rhs.y) }
+
     public static func *(lhs: Vec2<T>, rhs: T) -> Vec2<T> { Vec2(x: lhs.x * rhs, y: lhs.y * rhs) }
 
     public static func *=(lhs: inout Vec2<T>, rhs: Vec2<T>) {
