@@ -5,7 +5,7 @@ public struct Vec2<T>: CustomStringConvertible {
     public var asTuple: (x: T, y: T) { (x: x, y: y) }
     public var description: String { "(\(x), \(y))" }
 
-    public init(x: T = 0, y: T = 0) {
+    public init(x: T, y: T) {
         self.x = x
         self.y = y
     }
@@ -36,7 +36,19 @@ extension Vec2: Equatable where T: Equatable {}
 extension Vec2: Hashable where T: Hashable {}
 
 extension Vec2 where T: ExpressibleByIntegerLiteral {
-    public static func zero() -> Vec2<T> { Vec2(x: 0, y: 0) }
+    public static func zero() -> Vec2<T> { Vec2() }
+
+    public init() {
+        self.init(x: 0, y: 0)
+    }
+
+    public init(x: T) {
+        self.init(x: x, y: 0)
+    }
+
+    public init(y: T) {
+        self.init(x: 0, y: y)
+    }
 }
 
 extension Vec2 where T: IntExpressibleAlgebraicField {
