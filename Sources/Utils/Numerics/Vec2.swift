@@ -15,12 +15,12 @@ public struct Vec2<T>: CustomStringConvertible {
         y = value
     }
 
-    public func map(_ f: (T) throws -> T) rethrows -> Vec2<T> { try Vec2(x: f(x), y: f(y)) }
+    public func map<U>(_ f: (T) throws -> U) rethrows -> Vec2<U> {
+        try Vec2<U>(x: f(x), y: f(y))
+    }
 
-    public func mapBoth(_ fx: (T) throws -> T, _ fy: (T) throws -> T) rethrows -> Vec2<T> { try Vec2(x: fx(x), y: fy(y)) }
-
-    public func map<R>(mapper: (T) -> R) -> Vec2<R> {
-        Vec2<R>(x: mapper(x), y: mapper(y))
+    public func mapBoth<U>(_ fx: (T) throws -> U, _ fy: (T) throws -> U) rethrows -> Vec2<U> {
+        try Vec2<U>(x: fx(x), y: fy(y))
     }
 
     public func with(x newX: T) -> Vec2<T> {
