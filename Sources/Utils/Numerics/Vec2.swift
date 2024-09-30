@@ -34,6 +34,7 @@ public struct Vec2<T>: CustomStringConvertible {
 
 extension Vec2: Equatable where T: Equatable {}
 extension Vec2: Hashable where T: Hashable {}
+extension Vec2: Sendable where T: Sendable {}
 
 extension Vec2 where T: ExpressibleByIntegerLiteral {
     public static func zero() -> Vec2<T> { Vec2() }
