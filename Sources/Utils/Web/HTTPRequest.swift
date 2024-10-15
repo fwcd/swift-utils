@@ -144,7 +144,13 @@ public struct HTTPRequest {
 
     /// Runs the request and interprets the response as XML via the given delegate.
     public func fetchXMLAsync(using delegate: any XMLParserDelegate & Sendable) {
+        fetchXMLAsync { delegate }
+    }
+
+    /// Runs the request and interprets the response as XML via the given delegate.
+    public func fetchXMLAsync(using delegateFactory: @Sendable @escaping () -> any XMLParserDelegate) {
         runAsync().listen {
+            let delegate = delegateFactory()
             switch $0 {
                 case .success(let data):
                     let parser = XMLParser(data: data)
