@@ -5,15 +5,15 @@ public extension Optional {
 
     // MARK: Async combinators
 
-    func filter(_ predicate: (Wrapped) async throws -> Bool) async rethrows -> Wrapped? {
-        try await flatMap { try await predicate($0) ? $0 : nil }
+    func asyncFilter(_ predicate: (Wrapped) async throws -> Bool) async rethrows -> Wrapped? {
+        try await asyncFlatMap { try await predicate($0) ? $0 : nil }
     }
 
-    func map<T>(_ transform: (Wrapped) async throws -> T) async rethrows -> T? {
-        try await flatMap(transform)
+    func asyncMap<T>(_ transform: (Wrapped) async throws -> T) async rethrows -> T? {
+        try await asyncFlatMap(transform)
     }
 
-    func flatMap<T>(_ transform: (Wrapped) async throws -> T?) async rethrows -> T? {
+    func asyncFlatMap<T>(_ transform: (Wrapped) async throws -> T?) async rethrows -> T? {
         if let self {
             try await transform(self)
         } else {
