@@ -4,7 +4,7 @@ nonisolated(unsafe) fileprivate let fractionPattern = #/(?<numerator>-?\s*\d+)\s
 fileprivate let reduceThreshold = 1000
 
 /// A numeric type supporting precise division.
-public struct Rational: SignedNumeric, Addable, Subtractable, Multipliable, Divisible, Negatable, Absolutable, ExpressibleByIntegerLiteral, Hashable, Comparable, CustomStringConvertible {
+public struct Rational: SignedNumeric, Addable, Subtractable, Multipliable, Divisible, Negatable, Absolutable, ExpressibleByIntegerLiteral, Sendable, Hashable, Comparable, CustomStringConvertible {
     public var numerator: Int
     public var denominator: Int
     public var isPrecise: Bool
