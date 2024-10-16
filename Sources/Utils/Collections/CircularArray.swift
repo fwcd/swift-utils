@@ -66,3 +66,5 @@ public struct CircularArray<T>: Sequence {
         }
     }
 }
+
+extension CircularArray: Sendable where T: Sendable {}
