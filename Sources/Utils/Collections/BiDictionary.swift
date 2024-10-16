@@ -57,3 +57,5 @@ public struct BiDictionary<K, V>: ExpressibleByDictionaryLiteral, Sequence, Hash
         keysToValues.makeIterator()
     }
 }
+
+extension BiDictionary: Sendable where K: Sendable, V: Sendable {}
