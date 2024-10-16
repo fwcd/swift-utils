@@ -76,6 +76,18 @@ public extension Sequence {
 
     // MARK: Async combinators
 
+    func asyncFilter(_ predicate: (Element) async throws -> Bool) async rethrows -> [Element] {
+        var result: [Element] = []
+
+        for element in self {
+            if try await predicate(element) {
+                result.append(element)
+            }
+        }
+
+        return result
+    }
+
     func asyncMap<T>(_ transform: (Element) async throws -> T) async rethrows -> [T] {
         var result: [T] = []
 
