@@ -85,3 +85,5 @@ public struct BinaryHeap<E>: PriorityQueue where E: Comparable {
 
     private func isLeaf(_ index: Int) -> Bool { return leftChild(of: index) >= elements.count || rightChild(of: index) >= elements.count }
 }
+
+extension BinaryHeap: Sendable where E: Sendable {}
