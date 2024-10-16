@@ -143,3 +143,5 @@ public enum FixedArray<T> {
         }
     }
 }
+
+extension FixedArray: Sendable where T: Sendable {}
