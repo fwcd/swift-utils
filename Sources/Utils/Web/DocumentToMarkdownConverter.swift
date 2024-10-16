@@ -4,7 +4,7 @@ import Foundation
 /**
  * Converts HTML documents into Markdown.
  */
-public struct DocumentToMarkdownConverter {
+public struct DocumentToMarkdownConverter: Sendable {
     private let defaultPrefix: String
     private let defaultPostfix: String
     private let useMultiLineCodeBlocks: Bool
