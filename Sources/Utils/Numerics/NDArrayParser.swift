@@ -12,7 +12,7 @@ nonisolated(unsafe) fileprivate let tokenPattern = Regex {
     }
 }
 
-public struct NDArrayParser {
+public struct NDArrayParser: Sendable {
     public init() {}
 
     public func parse(_ input: String) throws -> NDArray<Rational> {
