@@ -5,4 +5,8 @@ public struct UncheckedSendable<Value>: @unchecked Sendable {
     public init(wrappedValue: Value) {
         self.wrappedValue = wrappedValue
     }
+
+    public init(_ wrappedValue: Value) {
+        self.init(wrappedValue: wrappedValue)
+    }
 }
