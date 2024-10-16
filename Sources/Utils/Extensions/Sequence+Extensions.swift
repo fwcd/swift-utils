@@ -76,7 +76,7 @@ public extension Sequence {
 
     // MARK: Async combinators
 
-    func asyncFilter(_ predicate: (Element) async throws -> Bool) async rethrows -> [Element] {
+    func asyncFilter(_ predicate: @Sendable (Element) async throws -> Bool) async rethrows -> [Element] {
         var result: [Element] = []
 
         for element in self {
@@ -88,7 +88,7 @@ public extension Sequence {
         return result
     }
 
-    func asyncMap<T>(_ transform: (Element) async throws -> T) async rethrows -> [T] {
+    func asyncMap<T>(_ transform: @Sendable (Element) async throws -> T) async rethrows -> [T] {
         var result: [T] = []
 
         for element in self {
@@ -98,7 +98,7 @@ public extension Sequence {
         return result
     }
 
-    func asyncFlatMap<T, S>(_ transform: (Element) async throws -> S) async rethrows -> [T] where S: Sequence<T> {
+    func asyncFlatMap<T, S>(_ transform: @Sendable (Element) async throws -> S) async rethrows -> [T] where S: Sequence<T> {
         var result: [T] = []
 
         for element in self {
@@ -108,7 +108,7 @@ public extension Sequence {
         return result
     }
 
-    func asyncCompactMap<T>(_ transform: (Element) async throws -> T?) async rethrows -> [T] {
+    func asyncCompactMap<T>(_ transform: @Sendable (Element) async throws -> T?) async rethrows -> [T] {
         var result: [T] = []
 
         for element in self {
