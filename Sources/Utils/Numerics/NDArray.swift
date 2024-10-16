@@ -151,3 +151,5 @@ public struct NDArray<T: IntExpressibleAlgebraicField>: Addable, Subtractable, N
         try zip(rhs, with: *).values.reduce(0, +)
     }
 }
+
+extension NDArray: Sendable where T: Sendable {}

@@ -332,6 +332,8 @@ public struct Matrix<T: IntExpressibleAlgebraicField>: Addable, Subtractable, Ha
     }
 }
 
+extension Matrix: Sendable where T: Sendable {}
+
 extension NDArray {
     public var asMatrix: Matrix<T>? {
         dimension == 2 ? Matrix(width: shape[1], height: shape[0], values: values) : nil

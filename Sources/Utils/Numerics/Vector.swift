@@ -87,6 +87,8 @@ extension Vector where T == Rational {
     public var asDouble: Vector<Double> { map { $0.asDouble } }
 }
 
+extension Vector: Sendable where T: Sendable {}
+
 extension NDArray {
     public var asVector: Vector<T>? {
         dimension == 1 ? Vector(values) : nil
