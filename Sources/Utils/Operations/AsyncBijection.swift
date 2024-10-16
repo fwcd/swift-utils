@@ -1,5 +1,5 @@
-public protocol AsyncBijection {
-    associatedtype Value
+public protocol AsyncBijection: Sendable {
+    associatedtype Value: Sendable
 
     func apply(_ value: Value) async -> Value
 

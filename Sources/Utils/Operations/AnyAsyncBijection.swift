@@ -1,20 +1,20 @@
-public struct AnyAsyncBijection<V>: AsyncBijection {
-    private let applyImpl: (V) async -> V
-    private let inverseApplyImpl: (V) async -> V
+public struct AnyAsyncBijection<V>: AsyncBijection where V: Sendable {
+    private let applyImpl: @Sendable (V) async -> V
+    private let inverseApplyImpl: @Sendable (V) async -> V
 
-    public init(apply applyImpl: @escaping (V) async -> V, inverseApply inverseApplyImpl: @escaping (V) async -> V) {
+    public init(apply applyImpl: @Sendable @escaping (V) async -> V, inverseApply inverseApplyImpl: @Sendable @escaping (V) async -> V) {
         self.applyImpl = applyImpl
         self.inverseApplyImpl = inverseApplyImpl
     }
 
     public init<B>(_ bijection: B) where B: AsyncBijection, B.Value == V {
-        applyImpl = bijection.apply
-        inverseApplyImpl = bijection.inverseApply
+        applyImpl = { await bijection.apply($0) }
+        inverseApplyImpl = { await bijection.inverseApply($0) }
     }
 
     public init<B>(_ bijection: B) where B: Bijection, B.Value == V {
-        applyImpl = bijection.apply
-        inverseApplyImpl = bijection.inverseApply
+        applyImpl = { bijection.apply($0) }
+        inverseApplyImpl = { bijection.inverseApply($0) }
     }
 
     public func apply(_ value: V) async -> V { return await applyImpl(value) }
