@@ -73,4 +73,38 @@ public extension Sequence {
             .sorted(by: ascendingComparator { ($0.1)[0].0 })
             .map { ($0.0, $0.1.map(\.1)) }
     }
+
+    // MARK: Async combinators
+
+    func asyncMap<T>(_ transform: (Element) async throws -> T) async rethrows -> [T] {
+        var result: [T] = []
+
+        for element in self {
+            result.append(try await transform(element))
+        }
+
+        return result
+    }
+
+    func asyncFlatMap<T, S>(_ transform: (Element) async throws -> S) async rethrows -> [T] where S: Sequence<T> {
+        var result: [T] = []
+
+        for element in self {
+            result += try await transform(element)
+        }
+
+        return result
+    }
+
+    func asyncCompactMap<T>(_ transform: (Element) async throws -> T?) async rethrows -> [T] {
+        var result: [T] = []
+
+        for element in self {
+            if let transformed = try await transform(element) {
+                result.append(transformed)
+            }
+        }
+
+        return result
+    }
 }
