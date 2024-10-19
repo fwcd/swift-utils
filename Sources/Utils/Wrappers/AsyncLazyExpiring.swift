@@ -5,12 +5,12 @@ import Foundation
 
 /// A value that periodically expires and gets re-queried
 /// through a supplied getter.
-public struct AsyncLazyExpiring<T> {
+public struct AsyncLazyExpiring<T>: Sendable where T: Sendable {
     public let expiryInterval: TimeInterval
     public private(set) var nextExpiry: Date? = nil
     private var expired: Bool { nextExpiry.map { $0.timeIntervalSinceNow < 0 } ?? true }
 
-    private let getter: () async throws -> T
+    private let getter: @Sendable () async throws -> T
     private var cachedValue: T?
     public var wrappedValue: T {
         mutating get async throws {
@@ -21,7 +21,7 @@ public struct AsyncLazyExpiring<T> {
         }
     }
 
-    public init(in expiryInterval: TimeInterval = 1.0, wrappedValue getter: @escaping () async throws -> T) {
+    public init(in expiryInterval: TimeInterval = 1.0, wrappedValue getter: @Sendable @escaping () async throws -> T) {
         self.getter = getter
         self.expiryInterval = expiryInterval
     }
