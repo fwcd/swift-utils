@@ -1,4 +1,4 @@
-public struct Translation<T: Addable & Subtractable>: Bijection {
+public struct Translation<T: Addable & Subtractable & Sendable>: Bijection {
     private let offset: T
 
     public init(by offset: T) {

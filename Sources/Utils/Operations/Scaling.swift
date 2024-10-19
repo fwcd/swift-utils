@@ -1,4 +1,4 @@
-public struct Scaling<T: Multipliable & Divisible>: Bijection {
+public struct Scaling<T: Multipliable & Divisible & Sendable>: Bijection {
     private let factor: T
 
     public init(by factor: T) {
