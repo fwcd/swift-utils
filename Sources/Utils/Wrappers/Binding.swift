@@ -1,8 +1,8 @@
 /// A mutable, reference-like property wrapper that can read and write a value.
 @propertyWrapper
-public struct Binding<Value> {
-    private let _get: () -> Value
-    private let _set: (Value) -> Void
+public struct Binding<Value>: Sendable {
+    private let _get: @Sendable () -> Value
+    private let _set: @Sendable (Value) -> Void
 
     public var wrappedValue: Value {
         get { _get() }
@@ -20,7 +20,7 @@ public struct Binding<Value> {
     }
 
     /// Creates a binding with the given getter and setter.
-    public init(get: @escaping () -> Value, set: @escaping (Value) -> Void) {
+    public init(get: @Sendable @escaping () -> Value, set: @Sendable @escaping (Value) -> Void) {
         _get = get
         _set = set
     }
