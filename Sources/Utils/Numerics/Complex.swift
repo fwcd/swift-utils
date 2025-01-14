@@ -1,6 +1,6 @@
 /// A complex number, i.e. an element of the algebraic
 /// closure of the real numbers.
-public struct Complex: SignedNumeric, Addable, Subtractable, Multipliable, Divisible, Negatable, Absolutable, Hashable, ExpressibleByFloatLiteral, CustomStringConvertible, Sendable {
+public struct Complex: SignedNumeric, Addable, Subtractable, Multipliable, Divisible, Negatable, Absolutable, Hashable, ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral, CustomStringConvertible, Sendable {
     public static let i = Complex(0, i: 1)
     public var real: Double
     public var imag: Double
