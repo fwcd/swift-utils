@@ -1,3 +1,5 @@
+import Foundation
+
 /// A complex number, i.e. an element of the algebraic
 /// closure of the real numbers.
 public struct Complex: SignedNumeric, Addable, Subtractable, Multipliable, Divisible, Negatable, Absolutable, Hashable, ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral, CustomStringConvertible, Sendable {
@@ -10,6 +12,18 @@ public struct Complex: SignedNumeric, Addable, Subtractable, Multipliable, Divis
     public var absolute: Double { return magnitude }
     public var squared: Complex { return self * self }
     public var conjugate: Complex { return Complex(real, i: -imag) }
+
+    public var exp: Complex {
+        guard imag != 0 else {
+            return Complex(Foundation.exp(real))
+        }
+
+        guard real != 0 else {
+            return Complex(cos(imag), i: sin(imag))
+        }
+
+        return Complex(real).exp * Complex(i: imag).exp
+    }
 
     public init(_ real: Double = 0, i imag: Double = 0) {
         self.real = real
