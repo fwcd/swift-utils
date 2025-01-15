@@ -13,6 +13,8 @@ final class ComplexTests: XCTestCase {
         assertComplexEq(a / b, -0.684083878 - 0.625644551 * .i)
         assertComplexEq(a - b, 8.3 + 5 * .i)
         assertComplexEq(-a, -3 - 4 * .i)
+        assertComplexEq(a.conjugate, 3 - 4 * .i)
+        assertComplexEq(a.exp, -13.128783081462158 - 15.200784463067956 * .i)
     }
 
     private func assertComplexEq(_ lhs: Complex, _ rhs: Complex) {
