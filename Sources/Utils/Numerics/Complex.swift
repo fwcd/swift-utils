@@ -9,6 +9,7 @@ public struct Complex: SignedNumeric, Addable, Subtractable, Multipliable, Divis
     public var magnitude: Double { return magnitudeSquared.squareRoot() }
     public var absolute: Double { return magnitude }
     public var squared: Complex { return self * self }
+    public var conjugate: Complex { return Complex(real, i: -imag) }
 
     public init(_ real: Double = 0, i imag: Double = 0) {
         self.real = real
